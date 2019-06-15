@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="29beaa5b-e0d2-47e8-b92c-0e46e3644e42" name="f" url="http://devon">
+        <fileTransfer port="0" mountedRoot="C:\Users\david\PycharmProjects\site" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -45,7 +45,7 @@ def contactus():
     return render_template('contactus.html')
 
 
-@app.route('/login/')
+@app.route('/login/', methods=["GET", "POST"])
 def login():
 
     return render_template('login.html')

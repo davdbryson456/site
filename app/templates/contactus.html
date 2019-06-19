@@ -4,24 +4,26 @@
 
 <h1 class="jumbotron">Contact Us</h1>
 
-    <form>
-  <fieldset>
+    <form action="{{ url_for('contactus') }}" method="post">
 
-    <div class="form-group">
-      <label for="exampleInputEmail1">Please enter  you Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-    </div>
+      <fieldset>
 
-
-    <div class="form-group">
-      <label for="exampleTextarea">What would you like to say to us?</label>
-      <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-    </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Please enter  you Email address</label>
+          {{ contact.email }}
+        </div>
 
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </fieldset>
-</form>
+        <div class="form-group">
+          <label for="exampleTextarea">What would you like to say to us?</label>
+          {{ contact.message }}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </fieldset>
+
+    </form>
 
 
 

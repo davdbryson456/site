@@ -10,23 +10,23 @@
 
           <div class="form-group">
             <label for="exampleInputEmail1">Please enter your name</label>
-            {{ contact.name }}
+            {{ contact.name(class="form-control") }}
           </div>
 
           <div class="form-group">
             <label for="exampleInputEmail1">What is your message about?</label>
-            {{ contact.subject }}
+            {{ contact.subject(class="form-control") }}
           </div>
 
         <div class="form-group">
           <label for="exampleInputEmail1">Please enter  you Email address</label>
-          {{ contact.email }}
+          {{ contact.email(class="form-control") }}
         </div>
 
 
         <div class="form-group">
           <label for="exampleTextarea">What would you like to say to us?</label>
-          {{ contact.message }}
+          {{ contact.message(class="form-control") }}
         </div>
 
         {{ contact.csrf_token }}

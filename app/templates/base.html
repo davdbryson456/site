@@ -21,11 +21,29 @@
     <header>
         {% include "header.html" %}
     </header>
+
     <main>
         <div class="container">
+            {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class="flashes">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+            {% endwith %}
+
+        </div>
+
+        <div class="container">
+
             {% block main %}{% endblock %}
+
         </div>
     </main>
+
+
     <footer>
         <div class="container">
             {% include "footer.html" %}

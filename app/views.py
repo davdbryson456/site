@@ -1,8 +1,9 @@
-from app import app
-from flask import render_template, url_for, flash, redirect
+from app import app, db
+from flask import render_template, url_for, flash, redirect, request
 from app import mail
 from flask_mail import Message
-from app.forms import contactform
+from app.forms import Signup, contactform, Login
+from .models import Users
 
 @app.route('/')
 def home():
@@ -29,6 +30,23 @@ def books():
     return render_template('books.html')
 
 
+
+@app.route('/signup/', methods=["GET", "POST"])
+def signup():
+
+    signupForm = Signup()
+
+    if request.method == 'POST' and signupForm.validate_on_submit():
+
+        user = Users(signupForm.firstname.data, signupForm.lastname.data, signupForm.username.data, signupForm.password.data, signupForm.email.data)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Successfully Registered','success')
+    return render_template('signup.html', signupForm = signupForm)
+
+
+
 @app.route('/medicalsupplies/')
 def medicalsupplies():
 
@@ -46,7 +64,7 @@ def contactus():
 
     contact = contactform()
 
-    if contact.validate_on_submit():
+    if request.method == 'POST' and contact.validate_on_submit():
 
         with mail.connect() as conn:
 
@@ -76,7 +94,8 @@ def contactus():
 @app.route('/login/', methods=["GET", "POST"])
 def login():
 
-    return render_template('login.html')
+    login = Login()
+    return render_template('login.html',login =login)
 
 
 

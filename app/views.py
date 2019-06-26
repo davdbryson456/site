@@ -4,6 +4,7 @@ from app import mail
 from flask_mail import Message
 from app.forms import Signup, contactform, Login
 from .models import Users
+from sqlalchemy.exc import IntegrityError
 
 @app.route('/')
 def home():
@@ -38,11 +39,31 @@ def signup():
 
     if request.method == 'POST' and signupForm.validate_on_submit():
 
-        user = Users(signupForm.firstname.data, signupForm.lastname.data, signupForm.username.data, signupForm.password.data, signupForm.email.data)
-        db.session.add(user)
-        db.session.commit()
+        try:
+            user = Users(signupForm.firstname.data, signupForm.lastname.data, signupForm.username.data, signupForm.password.data, signupForm.email.data)
+            db.session.add(user)
+            db.session.commit()
 
-        flash('Successfully Registered','success')
+            flash('Successfully Registered','success')
+
+            with mail.connect() as conn:
+
+                msg = Message(subject="Welcome to HyperAcademics!", sender="davidbryson@hotmail.com",
+                              recipients=[signupForm.email.data])
+
+                body = ("Your Username is:"+" "+signupForm.username.data+"\n" +
+                        "Please wait for admin approval before you are able to sign in")
+
+                msg.body = (body)
+
+                conn.send(msg)
+
+        except IntegrityError:
+
+            flash('The entered username is taken!','danger')
+
+
+
     return render_template('signup.html', signupForm = signupForm)
 
 

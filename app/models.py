@@ -1,8 +1,9 @@
 from . import db
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_login import UserMixin
 
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'
 
@@ -18,6 +19,8 @@ class Users(db.Model):
 
     email = db.Column(db.String(255))
 
+    is_admin = db.Column(db.Boolean, default=False)
+
     def __init__(self, first_name, last_name, username, password, email):
 
         self.first_name = first_name
@@ -29,6 +32,8 @@ class Users(db.Model):
         self.email = email
 
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
+
+
 
     def is_authenticated(self):
         return True
@@ -51,3 +56,4 @@ class Users(db.Model):
     def __repr__(self):
 
         return '<User %r>' % self.username
+

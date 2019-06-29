@@ -4,7 +4,22 @@
 
     <h1 class="jumbotron">Tutorials</h1>
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/y4tuQ9T6j4s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+    {% for video in videos %}
+
+
+       <video controls controlsList="nodownload" width="400" height=200">
+
+            <source src="{{ url_for('static',filename= "uploads/" + video ) }}" type="video/mp4"/>
+
+            Sorry, your browser doesn't support embedded videos.
+       </video>
+
+
+    {% endfor%}
+
+
 
 
 

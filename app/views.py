@@ -1,8 +1,9 @@
+import os
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login
+from app.forms import Signup, contactform, Login, Uploadvids
 from .models import Users
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
@@ -10,6 +11,8 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from . import login_manager
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
+
 
 @app.route('/')
 def home():
@@ -28,7 +31,12 @@ def about():
 @login_required
 def tutorials():
 
-    return render_template('tutorials.html')
+    videos = get_uploaded_videos()
+
+    return render_template('tutorials.html', videos=videos)
+
+
+
 
 
 @app.route('/books/')
@@ -160,6 +168,25 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route('/uploads/', methods=['POST', 'GET'])
+def uploads():
+
+
+    uploads = Uploadvids()
+
+
+    if request.method == 'POST' and uploads.validate_on_submit():
+
+        video = uploads.video.data
+        videoname = secure_filename(video.filename)
+        video.save(os.path.join(app.config['UPLOAD_FOLDER'], videoname))
+        flash('File Saved', 'success')
+        return redirect(url_for('home'))
+    else:
+        flash('error')
+    return render_template('uploads.html', uploads=uploads)
+
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
@@ -191,12 +218,24 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
+def get_uploaded_videos():
+    rootdir = os.getcwd()
+    filenames = []
+    for subdir, dirs, files in os.walk(rootdir + './app/static/uploads'):
+	    for file in files:
+             filenames.append(os.path.join( file).split('/')[-1])
+    return filenames
+
+
+
+
 class MyModelView (ModelView):  # add_view restriction
     def is_accessible(self):
         if current_user.is_admin == True:
             return current_user.is_authenticated
         else:
             return abort(404)
+
     def not_auth(self):
         return "Not Authorized"
 

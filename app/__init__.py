@@ -31,6 +31,9 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = "info"
 app.config.from_object(__name__)
 
+# uploads config
+app.config['UPLOAD_FOLDER'] = "./app/static/uploads"
+
 
 
 from app import views

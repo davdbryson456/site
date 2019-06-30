@@ -169,23 +169,25 @@ def logout():
 
 
 @app.route('/uploads/', methods=['POST', 'GET'])
+@login_required
 def uploads():
 
+    if current_user.is_admin == True:
 
-    uploads = Uploadvids()
+        uploads = Uploadvids()
 
+        if request.method == 'POST' and uploads.validate_on_submit():
 
-    if request.method == 'POST' and uploads.validate_on_submit():
+            video = uploads.video.data
+            videoname = secure_filename(video.filename)
+            video.save(os.path.join(app.config['UPLOAD_FOLDER'], videoname))
+            flash('File Saved', 'success')
+            return redirect(url_for('home'))
 
-        video = uploads.video.data
-        videoname = secure_filename(video.filename)
-        video.save(os.path.join(app.config['UPLOAD_FOLDER'], videoname))
-        flash('File Saved', 'success')
-        return redirect(url_for('home'))
+        return render_template('uploads.html', uploads=uploads)
+
     else:
-        flash('error')
-    return render_template('uploads.html', uploads=uploads)
-
+        return redirect(url_for('home'))
 
 
 @app.route('/<file_name>.txt')

@@ -31,4 +31,4 @@ class Login (Form):
 
 class Uploadvids(Form):
 
-    video = FileField('Video', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
+    video = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])

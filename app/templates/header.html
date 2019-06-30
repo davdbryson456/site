@@ -38,18 +38,27 @@
         </li>
 
         {% if current_user.is_authenticated %}
-
         {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
             </li>
         {% endif %}
 
+
+        {% if current_user.is_admin %}
+            <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('uploads') }}">Upload Videos</a>
+        {% else %}
+        {% endif %}
+
+
         {% if current_user.is_authenticated %}
             <li class="nav-item">
             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
         {% else %}
         {% endif %}
+
+
 
     </ul>
   </div>

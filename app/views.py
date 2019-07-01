@@ -1,6 +1,6 @@
 import os
 from app import app, db
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
 from app.forms import Signup, contactform, Login, Uploadvids
@@ -12,6 +12,7 @@ from flask_admin.contrib.sqla import ModelView
 from . import login_manager
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
+from datetime import timedelta
 
 
 @app.route('/')
@@ -66,7 +67,7 @@ def signup():
                               recipients=[signupForm.email.data])
 
                 body = ("Your Username is:"+" "+signupForm.username.data+"\n" +
-                        "Please wait for admin approval before you are able to sign in")
+                        "Please wait for admin approval before you are able to sign in.")
 
                 msg.body = (body)
 
@@ -74,11 +75,11 @@ def signup():
 
         except IntegrityError:
 
-            flash('The entered username is taken!','danger')
+            flash('The entered username is taken!', 'danger')
 
 
 
-    return render_template('signup.html', signupForm = signupForm)
+    return render_template('signup.html', signupForm=signupForm)
 
 
 
@@ -115,11 +116,11 @@ def contactus():
             conn.send(msg)
 
 
-            flash('Message Sent','success')
+            flash('Message Sent', 'success')
 
             return redirect(url_for('home'))
 
-    return render_template('contactus.html', contact = contact)
+    return render_template('contactus.html', contact=contact)
 
 
 
@@ -142,18 +143,27 @@ def login():
 
         if user is not None and check_password_hash(user.password, password):
 
-            remember_me = False
+            if user.is_authorized == True:
 
-            if 'remember_me' in request.form:
-                remember_me = True
+                remember_me = False
 
-            login_user(user, remember=remember_me)
-            flash('Logged in successfully.', 'success')
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('home'))
+                if 'remember_me' in request.form:
+                    remember_me = True
+
+                login_user(user, remember=remember_me)
+                flash('Logged in successfully.', 'success')
+                next_page = request.args.get('next')
+                #print(user.is_authorized)
+                return redirect(next_page or url_for('home'))
+
+            else:
+
+                flash('Please wait for admin approval to sign in !', 'info')
+
         else:
 
             flash('Username or Password is incorrect.', 'danger')
+
     return render_template('login.html', login=login)
 
 
@@ -207,6 +217,12 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
+
+@app.before_request
+def before_request():
+    session.permanent = False
+    app.permanent_session_lifetime = timedelta(minutes=60)
 
 
 @app.errorhandler(404)

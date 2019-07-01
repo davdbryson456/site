@@ -21,6 +21,8 @@ class Users(db.Model, UserMixin):
 
     is_admin = db.Column(db.Boolean, default=False)
 
+    is_authorized = db.Column(db.Boolean, default=False)
+
     def __init__(self, first_name, last_name, username, password, email):
 
         self.first_name = first_name

@@ -4,8 +4,12 @@
 
 <h1 class="jumbotron">Sign up</h1>
 
+<div class="card">
 
-<form action= "{{ url_for('signup') }}" method="post" >
+ <div class="card-body px-lg-5 pt-5">
+
+
+<form action= "{{ url_for('signup') }}" method="post" class="border border-light p-6" style="color: #757575;">
   <fieldset>
 
       <div class="form-group">
@@ -44,5 +48,9 @@
   </fieldset>
 </form>
 
+ </div>
 
+</div>
+<br>
+<br>
 {% endblock %}

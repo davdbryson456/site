@@ -2,20 +2,23 @@
 
 {% block main %}
 
-    <h1 class="jumbotron">Tutorials</h1>
+<h1 class="jumbotron">Tutorials</h1>
 
 
 
     {% for video in videos %}
 
-
-       <video controls controlsList="nodownload" width="400" height=200">
+    <div class="card-body px-lg-8 pt-9">
+        <br>
+        <br>
+        <h6>{{ video }}</h6>
+       <video controls controlsList="nodownload" width="450" height=250">
 
             <source src="{{ url_for('static',filename= "uploads/" + video ) }}" type="video/mp4"/>
 
             Sorry, your browser doesn't support embedded videos.
        </video>
-
+    </div>
 
     {% endfor%}
 

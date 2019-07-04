@@ -32,9 +32,33 @@ def about():
 @login_required
 def tutorials():
 
-    videos = get_uploaded_videos()
+    if current_user.is_authorized == True:
 
-    return render_template('tutorials.html', videos=videos)
+        videos = get_uploaded_videos()
+
+        return render_template('tutorials.html', videos=videos)
+
+    else:
+
+        flash('You require admin approval to view this page !', 'info')
+        return redirect(url_for('home'))
+
+
+
+
+@app.route('/hyperdiscussons/')
+@login_required
+def hyperdiscussons():
+
+    pass
+
+
+
+
+
+
+
+
 
 
 
@@ -143,22 +167,17 @@ def login():
 
         if user is not None and check_password_hash(user.password, password):
 
-            if user.is_authorized == True:
+            remember_me = False
 
-                remember_me = False
+            if 'remember_me' in request.form:
+                remember_me = True
 
-                if 'remember_me' in request.form:
-                    remember_me = True
+            login_user(user, remember=remember_me)
+            flash('Logged in successfully.', 'success')
+            next_page = request.args.get('next')
+            #print(user.is_authorized)
+            return redirect(next_page or url_for('home'))
 
-                login_user(user, remember=remember_me)
-                flash('Logged in successfully.', 'success')
-                next_page = request.args.get('next')
-                #print(user.is_authorized)
-                return redirect(next_page or url_for('home'))
-
-            else:
-
-                flash('Please wait for admin approval to sign in !', 'info')
 
         else:
 

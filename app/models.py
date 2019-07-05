@@ -1,6 +1,7 @@
 from . import db
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
+import datetime
 
 
 class Users(db.Model, UserMixin):
@@ -59,3 +60,62 @@ class Users(db.Model, UserMixin):
 
         return '<User %r>' % self.username
 
+
+
+class Post(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    title = db.Column(db.String(100), nullable=False)
+
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime("%d-%m-%y %H:%M"))
+
+    content = db.Column(db.Text, nullable=False)
+
+    user_fname = db.Column(db.String(100), nullable=False)
+
+    user_lname = db.Column(db.String(100), nullable=False)
+
+    comments = db.relationship('Comment', backref='post', lazy=True)
+
+
+    def __init__(self, title, content, user_fname, user_lname):
+
+        self.title = title
+
+        self.content = content
+
+        self.user_fname = user_fname
+
+        self.user_lname = user_lname
+
+
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"
+
+
+
+
+class Comment(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    body = db.Column(db.String(100), nullable=False)
+
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime("%d-%m-%y %H:%M"))
+
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    first_n = db.Column(db.String(100), nullable=False)
+
+    last_n = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, body, post_id, first_n, last_n):
+
+        self.body = body
+        self.post_id = post_id
+        self.first_n = first_n
+        self.last_n = last_n
+
+    def __repr__(self):
+        return f"Comment('{self.body}', '{self.timestamp}')"

@@ -1,6 +1,6 @@
 from flask_wtf import Form
-from wtforms.fields import StringField, TextAreaField, PasswordField
-from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
+from wtforms.fields import StringField, TextAreaField, PasswordField, HiddenField
+from wtforms.validators import DataRequired, Email, EqualTo
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 import os
 
@@ -32,3 +32,15 @@ class Login (Form):
 class Uploadvids(Form):
 
     video = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
+
+
+class _Post(Form):
+
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+
+
+class _Comment(Form):
+
+    body = TextAreaField('Comment', validators=[DataRequired()])
+    post_id = HiddenField()

@@ -3,8 +3,8 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids
-from .models import Users
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment
+from .models import Users, Post, Comment
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
@@ -46,19 +46,40 @@ def tutorials():
 
 
 
-@app.route('/hyperdiscussons/')
+@app.route('/hyperdiscussons/', methods=["GET", "POST"])
 @login_required
 def hyperdiscussons():
 
-    pass
+    post = _Post()
+    comment = _Comment()
+
+    if request.method == 'POST' and post.validate_on_submit():
+
+        newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name)
+        db.session.add(newpost)
+        db.session.commit()
+        flash('Posted!', 'success')
+        return redirect(url_for('hyperdiscussons'))
+
+    content = get_posts()
+
+
+    if request.method == 'POST' and comment.validate_on_submit():
+
+        newcomment = Comment(comment.body.data, comment.post_id.data, current_user.first_name, current_user.last_name)
+        db.session.add(newcomment)
+        db.session.commit()
+        flash('Posted!', 'success')
+        return redirect(url_for('hyperdiscussons'))
+
+    return render_template('hyperdiscussons.html', post=post, content=content, comment=comment)
 
 
 
+def get_posts():
 
-
-
-
-
+    posts = db.session.query(Post).all()
+    return posts
 
 
 

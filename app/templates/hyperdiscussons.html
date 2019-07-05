@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h1 class="jumbotron">HyperDiscussions</h1>
+
+
+<div class="card">
+
+ <div class="card-body px-lg-5 pt-5">
+
+ <h3>Add a Post</h3>
+
+<form action= "{{ url_for('hyperdiscussons') }}" method="post" class="border border-light p-6" style="color: #757575;">
+
+  <fieldset>
+
+      <div class="form-group">
+        <label for="exampleInputPassword1">Title</label>
+        {{ post.title(class="form-control") }}
+      </div>
+
+      <div class="form-group">
+        <label for="exampleInputPassword1">Content</label>
+        {{ post.content(class="form-control")}}
+      </div>
+
+
+      {{post.csrf_token }}
+
+    <button type="submit" class="btn btn-dark">Post</button>
+  </fieldset>
+</form>
+
+ </div>
+</div>
+<br>
+<br>
+
+
+
+
+<div class="card">
+
+ <div class="card-body px-lg-5 pt-5">
+
+    <h3>Posts</h3>
+
+        {% for a in content %}
+
+         <div class="card">
+
+            <div class="card-body px-lg-5 pt-5">
+
+
+            <h4>{{a.user_fname}} {{ a.user_lname }}  <small>{{a.date_posted}}</small> </h4>
+
+            <h6>Title:{{ a.title }}</h6>
+
+            <p>{{ a.content }}</p>
+
+
+             <h6><strong>Comments</strong></h6>
+
+                <div class="card">
+
+                 {% for comment in  a.comments %}
+                     <strong>{{ comment.first_n }} {{ comment.last_n }}</strong>
+                     {{comment.body}}
+                     <br>
+                     <br>
+                  {% endfor %}
+
+                </div>
+
+            <form action= "{{ url_for('hyperdiscussons') }}" method="post" >
+
+                <fieldset>
+
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Comment</label>
+                        {{ comment.body(class="form-control") }}
+                      </div>
+
+                     {{ comment.post_id(value = a.id) }}
+
+                     {{comment.csrf_token }}
+                    <button type="submit" class="btn btn-dark">Comment</button>
+                </fieldset>
+            </form>
+
+            </div>
+         </div>
+         <br>
+         <br>
+        {% endfor %}
+
+
+ </div>
+
+</div>
+
+
+<br>
+<br>
+
+
+{% endblock %}

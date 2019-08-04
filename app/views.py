@@ -13,6 +13,9 @@ from . import login_manager
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import timedelta
+from time import ctime
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 @app.route('/')
@@ -55,23 +58,48 @@ def hyperdiscussons():
 
     if request.method == 'POST' and post.validate_on_submit():
 
-        newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name)
-        db.session.add(newpost)
-        db.session.commit()
-        flash('Posted!', 'success')
-        return redirect(url_for('hyperdiscussons'))
+        if is_filled(post.picture.data) == True:
 
-    content = get_posts()
+            target = os.path.join(APP_ROOT, 'photos/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            photo = post.picture.data
+            photoname = photo.filename
+            photo.save("/".join([target, photoname]))
+
+            timestamp = ctime()
+            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname)
+            db.session.add(newpost)
+            db.session.commit()
+            flash('Posted!', 'success')
+            return redirect(url_for('hyperdiscussons'))
+
+        else:
+
+            timestamp = ctime()
+
+            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp)
+            db.session.add(newpost)
+            db.session.commit()
+            flash('Posted!', 'success')
+            return redirect(url_for('hyperdiscussons'))
 
 
+    # COMMENT SECTION  ###############################################################################################3
     if request.method == 'POST' and comment.validate_on_submit():
 
-        newcomment = Comment(comment.body.data, comment.post_id.data, current_user.first_name, current_user.last_name)
+        time = ctime()
+
+        newcomment = Comment(comment.body.data, comment.post_id.data, current_user.first_name, current_user.last_name, time)
         db.session.add(newcomment)
         db.session.commit()
         flash('Posted!', 'success')
         return redirect(url_for('hyperdiscussons'))
 
+
+    content = get_posts()
     return render_template('hyperdiscussons.html', post=post, content=content, comment=comment)
 
 
@@ -298,7 +326,20 @@ class MyModelView (ModelView):  # add_view restriction
         return "Not Authorized"
 
 
+
+def is_filled(data):
+   if data == None:
+      return False
+   if data == '':
+      return False
+   if data == []:
+      return False
+   return True
+
 #Flask admin settings
 
 admin = Admin(app)
 admin.add_view(MyModelView(Users, db.session))
+
+admin.add_view(MyModelView(Post, db.session))
+admin.add_view(MyModelView(Comment, db.session))

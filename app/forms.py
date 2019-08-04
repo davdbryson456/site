@@ -2,7 +2,7 @@ from flask_wtf import Form
 from wtforms.fields import StringField, TextAreaField, PasswordField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-import os
+
 
 
 class Signup (Form):
@@ -38,7 +38,7 @@ class _Post(Form):
 
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
-
+    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
 
 class _Comment(Form):
 

@@ -54,14 +54,19 @@
 
         {% if current_user.is_authenticated %}
             <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('hyperdiscussons') }}">HyperDiscussions</a>
+             </li>
+        {% else %}
+        {% endif %}
+
+        {% if current_user.is_authenticated %}
+            <li class="nav-item">
             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
         {% else %}
         {% endif %}
 
 
-         <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('hyperdiscussons') }}">HyperDiscussions</a>
-         </li>
+
     </ul>
   </div>
 

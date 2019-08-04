@@ -42,4 +42,7 @@ app.config['UPLOAD_FOLDER'] = "./app/static/uploads"
 
 
 
+
+
+# add upload folder configs that were in youtube video
 from app import views

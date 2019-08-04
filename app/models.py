@@ -68,7 +68,7 @@ class Post(db.Model):
 
     title = db.Column(db.String(100), nullable=False)
 
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime("%d-%m-%y %H:%M"))
+    date_posted = db.Column(db.DateTime, nullable=False)
 
     content = db.Column(db.Text, nullable=False)
 
@@ -76,10 +76,12 @@ class Post(db.Model):
 
     user_lname = db.Column(db.String(100), nullable=False)
 
+    photopath = db.Column(db.String(100), nullable=True)
+
     comments = db.relationship('Comment', backref='post', lazy=True)
 
 
-    def __init__(self, title, content, user_fname, user_lname):
+    def __init__(self, title, content, user_fname, user_lname, date_posted, photopath):
 
         self.title = title
 
@@ -89,6 +91,9 @@ class Post(db.Model):
 
         self.user_lname = user_lname
 
+        self.date_posted = date_posted
+
+        self.photopath = photopath
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
@@ -102,7 +107,7 @@ class Comment(db.Model):
 
     body = db.Column(db.String(100), nullable=False)
 
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime("%d-%m-%y %H:%M"))
+    timestamp = db.Column(db.DateTime, nullable=False)
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
@@ -110,12 +115,13 @@ class Comment(db.Model):
 
     last_n = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, body, post_id, first_n, last_n):
+    def __init__(self, body, post_id, first_n, last_n, timestamp):
 
         self.body = body
         self.post_id = post_id
         self.first_n = first_n
         self.last_n = last_n
+        self.timestamp = timestamp
 
     def __repr__(self):
         return f"Comment('{self.body}', '{self.timestamp}')"

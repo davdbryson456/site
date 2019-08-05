@@ -60,7 +60,7 @@ def hyperdiscussons():
 
         if is_filled(post.picture.data) == True:
 
-            target = os.path.join(APP_ROOT, 'photos/')
+            target = os.path.join(APP_ROOT, 'static/photos/')
 
             if not os.path.isdir(target):
                 os.mkdir(target)
@@ -80,7 +80,8 @@ def hyperdiscussons():
 
             timestamp = ctime()
 
-            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp)
+            photoname = None
+            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname)
             db.session.add(newpost)
             db.session.commit()
             flash('Posted!', 'success')

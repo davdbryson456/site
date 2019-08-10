@@ -76,7 +76,7 @@ class Post(db.Model):
 
     user_lname = db.Column(db.String(100), nullable=False)
 
-    photopath = db.Column(db.String(100), nullable=True)
+    photopath = db.Column(db.String(255), nullable=True)
 
     comments = db.relationship('Comment', backref='post', lazy=True)
 
@@ -125,3 +125,130 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"Comment('{self.body}', '{self.timestamp}')"
+
+
+
+class NewBook (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    bookname = db.Column(db.String(150), nullable=False)
+
+    author = db.Column(db.String(150), nullable=False)
+
+    price = db.Column(db.Integer)
+
+    photopath = db.Column(db.String(255), nullable=True)
+
+
+    def __init__(self, bookname, author, price, photopath):
+
+        self.bookname = bookname
+        self.author = author
+        self.price = price
+        self.photopath = photopath
+
+
+    def __repr__(self):
+
+        return f"NewBook('{self.bookname}', '{self.price}')"
+
+
+
+
+class UsedBook (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    bookname = db.Column(db.String(150), nullable=False)
+
+    author = db.Column(db.String(150), nullable=False)
+
+    price = db.Column(db.Integer)
+
+    photopath = db.Column(db.String(255), nullable=True)
+
+
+
+    def __init__(self, bookname, author, price, photopath):
+
+        self.bookname = bookname
+        self.author = author
+        self.price = price
+        self.photopath = photopath
+
+
+    def __repr__(self):
+        return f"UsedBook('{self.bookname}', '{self.price}')"
+
+
+
+class Supplies (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(150), nullable=False)
+
+    price = db.Column(db.Integer)
+
+    photopath = db.Column(db.String(255), nullable=True)
+
+
+    def __init__(self, name, price, photopath):
+
+        self.name = name
+        self.price = price
+        self.photopath = photopath
+
+
+    def __repr__(self):
+        return f"Supplies('{self.name}', '{self.price}')"
+
+
+
+class Accessories(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(150), nullable=False)
+
+    price = db.Column(db.Integer)
+
+    photopath = db.Column(db.String(255), nullable=True)
+
+
+    def __init__(self, name, price, photopath):
+
+        self.name = name
+        self.price = price
+        self.photopath = photopath
+
+
+    def __repr__(self):
+        return f"Accessories('{self.name}', '{self.price}')"
+
+
+
+class Orders (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    custname = db.Column(db.String(150), nullable=False)
+
+    ordernum = db.Column(db.Integer)
+
+    order = db.Column(db.String(200), nullable=False)
+
+    total = db.Column(db.Integer)
+
+
+    def __init__(self, custname, ordernum, order, total):
+
+        self.custname = custname
+        self.ordernum = ordernum
+        self.order = order
+        self.total = total
+
+
+    def __repr__(self):
+        return f"Orders('{self.custname}', '{self.price}')"

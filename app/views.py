@@ -4,7 +4,7 @@ from flask import render_template, url_for, flash, redirect, request, abort, ses
 from app import mail
 from flask_mail import Message
 from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment
-from .models import Users, Post, Comment
+from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
@@ -114,10 +114,19 @@ def get_posts():
 
 
 
-@app.route('/books/')
-def books():
+@app.route('/eShop/',methods=["GET", "POST"])
+def eShop():
 
-    return render_template('books.html')
+    def get_newbooks():
+
+    def get_usedBooks():
+
+    def get_supplies():
+
+    def get_accessories():
+
+
+    return render_template('eShop.html')
 
 
 
@@ -156,11 +165,6 @@ def signup():
     return render_template('signup.html', signupForm=signupForm)
 
 
-
-@app.route('/medicalsupplies/')
-def medicalsupplies():
-
-    return render_template('medicalsupplies.html')
 
 
 @app.route('/resources/')

@@ -140,14 +140,16 @@ class NewBook (db.Model):
 
     photopath = db.Column(db.String(255), nullable=True)
 
+    stock_status = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, bookname, author, price, photopath):
+
+    def __init__(self, bookname, author, price, photopath, stock_status):
 
         self.bookname = bookname
         self.author = author
         self.price = price
         self.photopath = photopath
-
+        self.stock_status = stock_status
 
     def __repr__(self):
 
@@ -168,14 +170,16 @@ class UsedBook (db.Model):
 
     photopath = db.Column(db.String(255), nullable=True)
 
+    stock_status = db.Column(db.String(255), nullable=False)
 
 
-    def __init__(self, bookname, author, price, photopath):
+    def __init__(self, bookname, author, price, photopath, stock_status):
 
         self.bookname = bookname
         self.author = author
         self.price = price
         self.photopath = photopath
+        self.stock_status = stock_status
 
 
     def __repr__(self):
@@ -193,12 +197,15 @@ class Supplies (db.Model):
 
     photopath = db.Column(db.String(255), nullable=True)
 
+    stock_status = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, name, price, photopath):
+
+    def __init__(self, name, price, photopath, stock_status):
 
         self.name = name
         self.price = price
         self.photopath = photopath
+        self.stock_status = stock_status
 
 
     def __repr__(self):
@@ -216,12 +223,15 @@ class Accessories(db.Model):
 
     photopath = db.Column(db.String(255), nullable=True)
 
+    stock_status = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, name, price, photopath):
+
+    def __init__(self, name, price, photopath, stock_status):
 
         self.name = name
         self.price = price
         self.photopath = photopath
+        self.stock_status = stock_status
 
 
     def __repr__(self):

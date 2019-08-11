@@ -114,19 +114,41 @@ def get_posts():
 
 
 
-@app.route('/eShop/',methods=["GET", "POST"])
+@app.route('/eShop/', methods=["GET", "POST"])
 def eShop():
 
     def get_newbooks():
 
+        post = db.session.query(NewBook).all()
+        return post
+
     def get_usedBooks():
+
+        post = db.session.query(UsedBook).all()
+        return post
+
 
     def get_supplies():
 
+        post = db.session.query(Supplies).all()
+        return post
+
     def get_accessories():
 
+        post = db.session.query(Accessories).all()
+        return post
 
-    return render_template('eShop.html')
+
+    newbooks = get_newbooks()
+    usedbooks = get_usedBooks()
+    supplies = get_supplies()
+    accessories = get_accessories()
+
+
+
+
+
+    return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories)
 
 
 
@@ -344,7 +366,12 @@ def is_filled(data):
 #Flask admin settings
 
 admin = Admin(app)
-admin.add_view(MyModelView(Users, db.session))
 
+admin.add_view(MyModelView(Users, db.session))
 admin.add_view(MyModelView(Post, db.session))
 admin.add_view(MyModelView(Comment, db.session))
+admin.add_view(MyModelView(NewBook, db.session))
+admin.add_view(MyModelView(UsedBook, db.session))
+admin.add_view(MyModelView(Supplies, db.session))
+admin.add_view(MyModelView(Accessories, db.session))
+admin.add_view(MyModelView(Orders, db.session))

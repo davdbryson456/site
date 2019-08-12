@@ -3,7 +3,7 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart
 from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
@@ -14,6 +14,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import timedelta
 from time import ctime
+
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -60,7 +61,7 @@ def hyperdiscussons():
 
         if is_filled(post.picture.data) == True:
 
-            target = os.path.join(APP_ROOT, 'static/photos/')
+            target = os.path.join(APP_ROOT, 'static/post_photos/')
 
             if not os.path.isdir(target):
                 os.mkdir(target)
@@ -144,11 +145,134 @@ def eShop():
     supplies = get_supplies()
     accessories = get_accessories()
 
+    item = addtocart()  # add to cart form
+    cart = [] #expound on this!
+    if request.method == 'POST' and item.validate_on_submit(): #this is for the add to cart button
+
+
+        cart.append((item.item_name.data, item.item_price.data)) # erases list every function call
+
+        print(cart)
+
+    return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories, item=item)
 
 
 
 
-    return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories)
+@app.route('/addstock/', methods=["GET", "POST"])
+@login_required
+def addstock():
+
+    if current_user.is_admin:
+
+        Nbook = Add_newbook()
+        Ubook = Add_usedbook()
+        supply = Add_supplies()
+        acc = Add_accessories()
+
+        if request.method == 'POST' and Nbook.validate_on_submit():
+
+            bname = Nbook.bookname.data
+            bauthor = Nbook.author.data
+            bprice = Nbook.price.data
+            npicture = Nbook.picture.data
+            npicture_name = npicture.filename
+            stock_status = "In Stock"
+
+            target = os.path.join(APP_ROOT, 'static/newbook_pics/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            npicture.save("/".join([target, npicture_name]))
+
+            new_book = NewBook(bname, bauthor, bprice, npicture_name, stock_status)
+
+            db.session.add(new_book)
+            db.session.commit()
+            flash('Stock Added!', 'success')
+            return redirect(url_for('addstock'))
+
+
+
+
+        if request.method == 'POST' and Ubook.validate_on_submit():
+
+            cname = Ubook.ubookname.data
+            cauthor = Ubook.uauthor.data
+            cprice = Ubook.uprice.data
+            cpicture = Ubook.upicture.data
+            cpicture_name = cpicture.filename
+            stock_status = "In Stock"
+
+            target = os.path.join(APP_ROOT, 'static/usedbook_pics/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            cpicture.save("/".join([target, cpicture_name]))
+
+            used_book = UsedBook(cname, cauthor, cprice, cpicture_name, stock_status)
+
+            db.session.add(used_book)
+            db.session.commit()
+            flash('Stock Added!', 'success')
+            return redirect(url_for('addstock'))
+
+
+
+        if request.method == 'POST' and supply.validate_on_submit():
+
+            sname = supply.supplyname.data
+            sprice = supply.price.data
+            stock_status = "In Stock"
+            spicture = supply.picture.data
+            spicture_name = spicture.filename
+
+            target = os.path.join(APP_ROOT, 'static/supplies_pics/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            spicture.save("/".join([target, spicture_name]))
+
+            new_supply = Supplies(sname, sprice, spicture_name, stock_status)
+
+            db.session.add(new_supply)
+            db.session.commit()
+            flash('Stock Added!', 'success')
+            return redirect(url_for('addstock'))
+
+
+        if request.method == 'POST' and acc.validate_on_submit():
+
+            ename = acc.accname.data
+            eprice = acc.price.data
+            stock_status = "In Stock"
+            epicture = acc.picture.data
+            epicture_name = epicture.filename
+
+            target = os.path.join(APP_ROOT, 'static/accessory_pics/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            epicture.save("/".join([target, epicture_name]))
+
+            new_accessory = Accessories(ename, eprice, epicture_name, stock_status)
+
+            db.session.add(new_accessory)
+            db.session.commit()
+            flash('Stock Added!', 'success')
+            return redirect(url_for('addstock'))
+
+
+
+        return render_template('addstock.html', Nbook=Nbook, Ubook=Ubook, supply=supply, acc=acc)
+
+    else:
+
+        return redirect(url_for('home'))
 
 
 
@@ -221,8 +345,6 @@ def contactus():
             return redirect(url_for('home'))
 
     return render_template('contactus.html', contact=contact)
-
-
 
 
 

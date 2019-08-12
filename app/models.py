@@ -162,28 +162,28 @@ class UsedBook (db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    bookname = db.Column(db.String(150), nullable=False)
+    ubookname = db.Column(db.String(150), nullable=False)
 
-    author = db.Column(db.String(150), nullable=False)
+    uauthor = db.Column(db.String(150), nullable=False)
 
-    price = db.Column(db.Integer)
+    uprice = db.Column(db.Integer)
 
-    photopath = db.Column(db.String(255), nullable=True)
+    uphotopath = db.Column(db.String(255), nullable=True)
 
-    stock_status = db.Column(db.String(255), nullable=False)
+    ustock_status = db.Column(db.String(255), nullable=False)
 
 
-    def __init__(self, bookname, author, price, photopath, stock_status):
+    def __init__(self, ubookname, uauthor, uprice, uphotopath, ustock_status):
 
-        self.bookname = bookname
-        self.author = author
-        self.price = price
-        self.photopath = photopath
-        self.stock_status = stock_status
+        self.ubookname = ubookname
+        self.uauthor = uauthor
+        self.uprice = uprice
+        self.uphotopath = uphotopath
+        self.ustock_status = ustock_status
 
 
     def __repr__(self):
-        return f"UsedBook('{self.bookname}', '{self.price}')"
+        return f"UsedBook('{self.ubookname}', '{self.uprice}')"
 
 
 

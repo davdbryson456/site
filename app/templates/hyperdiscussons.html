@@ -65,7 +65,7 @@
             <p>{{ a.content }}</p>
 
             {% if a.photopath %}
-                <img src="{{ url_for('static',filename= "photos/" + a.photopath ) }}"  class="img-fluid" alt="" height="420" width="620">
+                <img src="{{ url_for('static',filename= "post_photos/" + a.photopath ) }}"  class="img-fluid" alt="" height="420" width="620">
                 <br>
             {% else %}
 

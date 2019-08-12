@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms.fields import StringField, TextAreaField, PasswordField, HiddenField
+from wtforms.fields import StringField, TextAreaField, PasswordField, HiddenField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
@@ -40,7 +40,48 @@ class _Post(Form):
     content = TextAreaField('Content', validators=[DataRequired()])
     picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
 
+
 class _Comment(Form):
 
     body = TextAreaField('Comment', validators=[DataRequired()])
     post_id = HiddenField()
+
+
+
+class Add_newbook(Form):
+
+    bookname = TextAreaField('Book name', validators=[DataRequired()])
+    author = TextAreaField('Author', validators=[DataRequired()])
+    price = IntegerField('price', validators=[DataRequired()])
+    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+
+
+
+class Add_usedbook(Form):
+
+    ubookname = TextAreaField('Book name', validators=[DataRequired()])
+    uauthor = TextAreaField('Author', validators=[DataRequired()])
+    uprice = IntegerField('price', validators=[DataRequired()])
+    upicture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+
+
+
+class Add_supplies(Form):
+
+    supplyname = TextAreaField('Supply name', validators=[DataRequired()])
+    price = IntegerField('price', validators=[DataRequired()])
+    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+
+
+
+class Add_accessories(Form):
+
+    accname = TextAreaField('Accessory name', validators=[DataRequired()])
+    price = IntegerField('price', validators=[DataRequired()])
+    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+
+
+class addtocart(Form):
+
+    item_name = HiddenField()
+    item_price = HiddenField()

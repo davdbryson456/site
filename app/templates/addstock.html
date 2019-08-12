@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+<h1 class="jumbotron">Add Stock</h1>
+
+
+<div class="card bg-light">
+
+ <div class="card-body px-lg-5 pt-5">
+
+
+    <h4>Add New Book</h4>
+
+    <form action="{{ url_for('addstock') }}" method="post" class="border border-light p-6" style="color: #757575;" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Book Name</label>
+            {{ Nbook.bookname(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Author</label>
+            {{ Nbook.author(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Price</label>
+            {{ Nbook.price(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputPassword1">Book picture upload <strong>.jpg Format only!</strong></label> <br>
+            {{ Nbook.picture}}
+        </div>
+
+
+        {{ Nbook.csrf_token }}
+
+        <button type="submit" class="btn btn-dark">Add</button>
+
+    </form>
+
+    </div>
+</div>
+
+<br>
+<br>
+
+<div class="card bg-light">
+
+ <div class="card-body px-lg-5 pt-5">
+
+    <h4>Add Used Book</h4>
+
+    <form action="{{ url_for('addstock') }}" method="post" class="border border-light p-6" style="color: #757575;" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Book Name</label>
+            {{ Ubook.ubookname(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Author</label>
+            {{ Ubook.uauthor(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Price</label>
+            {{ Ubook.uprice(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputPassword1">Book picture upload <strong>.jpg Format only!</strong></label> <br>
+            {{ Ubook.upicture}}
+        </div>
+
+         {{ Ubook.csrf_token }}
+
+        <button type="submit" class="btn btn-dark">Add</button>
+    </form>
+
+    </div>
+</div>
+
+<br>
+<br>
+
+<div class="card bg-light">
+
+ <div class="card-body px-lg-5 pt-5">
+
+    <h4>Add Supplies</h4>
+
+    <form action="{{ url_for('addstock') }}" method="post" class="border border-light p-6" style="color: #757575;" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Supply name</label>
+            {{ supply.supplyname(class="form-control") }}
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Price</label>
+            {{ supply.price(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputPassword1">Supply picture upload <strong>.jpg Format only!</strong></label> <br>
+            {{ supply.picture}}
+        </div>
+
+         {{ supply.csrf_token }}
+
+        <button type="submit" class="btn btn-dark">Add</button>
+    </form>
+
+    </div>
+</div>
+
+<br>
+<br>
+
+<div class="card bg-light">
+
+ <div class="card-body px-lg-5 pt-5">
+
+
+    <h4>Add Accessories</h4>
+
+    <form action="{{ url_for('addstock') }}" method="post" class="border border-light p-6" style="color: #757575;" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Accessory name</label>
+            {{ acc.accname(class="form-control") }}
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Price</label>
+            {{ acc.price(class="form-control") }}
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputPassword1">Accessory picture upload <strong>.jpg Format only!</strong></label> <br>
+            {{ acc.picture}}
+        </div>
+
+         {{ acc.csrf_token }}
+
+        <button type="submit" class="btn btn-dark">Add</button>
+    </form>
+
+    </div>
+</div>
+
+<br>
+<br>
+
+{% endblock %}

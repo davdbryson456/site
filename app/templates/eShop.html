@@ -12,14 +12,25 @@
 
             {% for newbook in newbooks %}
 
-                {{ newbook.bookname }}
-                {{ newbook.author }}
-                {{ newbook.price }} {{ newbook.stock_status }}
+                <div class ="container-fluid">
+                    {{ newbook.bookname }}<br>
+                    {{ newbook.author }}<br>
+                    {{ newbook.price }} <strong>{{ newbook.stock_status }}</strong><br>
 
-                <img>
+                    <img src="{{ url_for('static',filename= "newbook_pics/" + newbook.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
+                    <br>
 
-                #add button right here for hidden form submission (add to cart)
 
+                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                        {{ item.item_name(value = newbook.bookname ) }}
+                        {{ item.item_price(value = newbook.price ) }}
+                        {{ item.csrf_token }}
+                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                    </form>
+
+                </div>
             {% endfor %}
 
 
@@ -36,9 +47,9 @@
 
             {% for usedbook in usedbooks %}
 
-                {{ usedbook.bookname }}
-                {{ usedbook.author }}
-                {{ usedbook.price }} {{ usedbook.stock_status }}
+                {{ usedbook.ubookname }}
+                {{ usedbook.uauthor }}
+                {{ usedbook.uprice }} {{ usedbook.ustock_status }}
 
                 <img>
 

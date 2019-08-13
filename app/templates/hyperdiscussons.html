@@ -45,6 +45,7 @@
 
 
 
+
 <div class="card ">
 
  <div class="card-body px-lg-5 pt-5 bg-light ">
@@ -58,19 +59,43 @@
             <div class="card-body px-lg-5 pt-5 bg-light">
 
 
+
             <h4>{{a.user_fname}} {{ a.user_lname }}  <small>{{a.date_posted}}</small> </h4>
 
             <h5>Title:{{ a.title }}</h5>
 
             <p>{{ a.content }}</p>
 
+
             {% if a.photopath %}
                 <img src="{{ url_for('static',filename= "post_photos/" + a.photopath ) }}"  class="img-fluid" alt="" height="420" width="620">
                 <br>
             {% else %}
-
             {% endif %}
 
+
+
+            {% if current_user.username == a.username or current_user.is_admin %}
+
+
+                <form action= "{{ url_for('hyperdiscussons') }}" method="post" >
+
+
+                     {{ delete.postId(value = a.id) }}
+
+                     {{delete.pic_name(value = a.photopath)}}
+
+                     {{ delete.csrf_token }}
+
+                      <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                </form>
+
+                <br>
+                <br>
+
+            {% else %}
+            {% endif %}
 
 
 

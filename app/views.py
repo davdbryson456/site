@@ -3,7 +3,7 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost
 from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
@@ -56,6 +56,10 @@ def hyperdiscussons():
 
     post = _Post()
     comment = _Comment()
+    delete = Deletepost()
+
+    # POST SECTION  ####################################################################################
+
 
     if request.method == 'POST' and post.validate_on_submit():
 
@@ -71,7 +75,7 @@ def hyperdiscussons():
             photo.save("/".join([target, photoname]))
 
             timestamp = ctime()
-            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname)
+            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname, current_user.username)
             db.session.add(newpost)
             db.session.commit()
             flash('Posted!', 'success')
@@ -82,7 +86,7 @@ def hyperdiscussons():
             timestamp = ctime()
 
             photoname = None
-            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname)
+            newpost = Post(post.title.data, post.content.data, current_user.first_name, current_user.last_name, timestamp, photoname, current_user.username)
             db.session.add(newpost)
             db.session.commit()
             flash('Posted!', 'success')
@@ -101,8 +105,39 @@ def hyperdiscussons():
         return redirect(url_for('hyperdiscussons'))
 
 
+
+    # DELETE POST SECTION ############################################################################################3
+    if request.method == 'POST' and delete.validate_on_submit():
+
+        post_ident = delete.postId.data
+        picture_path = delete.pic_name.data
+
+        if is_filled(picture_path)==True:
+
+            target = os.path.join(APP_ROOT, 'static/post_photos/')
+
+            os.remove("/".join([target, picture_path]))
+
+
+        del_post = Post.query.filter_by(id=post_ident).first()
+        del_comments = Comment.query.filter_by(post_id=post_ident).all()
+
+
+        for i in del_comments:
+            db.session.delete(i)
+            db.session.commit()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Post Deleted!', 'success')
+        return redirect(url_for('hyperdiscussons'))
+
+
+
+
     content = get_posts()
-    return render_template('hyperdiscussons.html', post=post, content=content, comment=comment)
+    return render_template('hyperdiscussons.html', post=post, content=content, comment=comment, delete=delete)
 
 
 
@@ -483,6 +518,8 @@ def is_filled(data):
       return False
    if data == []:
       return False
+   if data =='None':
+       return False
    return True
 
 #Flask admin settings

@@ -78,10 +78,12 @@ class Post(db.Model):
 
     photopath = db.Column(db.String(255), nullable=True)
 
+    username = db.Column(db.String(255), nullable=False)
+
     comments = db.relationship('Comment', backref='post', lazy=True)
 
 
-    def __init__(self, title, content, user_fname, user_lname, date_posted, photopath):
+    def __init__(self, title, content, user_fname, user_lname, date_posted, photopath, username):
 
         self.title = title
 
@@ -94,6 +96,8 @@ class Post(db.Model):
         self.date_posted = date_posted
 
         self.photopath = photopath
+
+        self.username = username
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"

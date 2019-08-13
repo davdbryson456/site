@@ -85,3 +85,10 @@ class addtocart(Form):
 
     item_name = HiddenField()
     item_price = HiddenField()
+
+
+class Deletepost(Form):
+
+    postId = HiddenField()
+    pic_name = HiddenField()
+

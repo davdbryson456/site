@@ -14,11 +14,31 @@
         <h6>{{ video }}</h6>
        <video controls controlsList="nodownload" width="450" height=250">
 
-            <source src="{{ url_for('static',filename= "uploads/" + video ) }}" type="video/mp4"/>
+            <source src="{{ url_for('static',filename= "tutorial_vids/" + video ) }}" type="video/mp4"/>
 
             Sorry, your browser doesn't support embedded videos.
        </video>
     </div>
+
+        {% if  current_user.is_admin %}
+
+
+                <form action= "{{ url_for('tutorials') }}" method="post" >
+
+
+                     {{ dele.vid_name(value = video) }}
+
+                     {{ dele.csrf_token }}
+
+                      <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                </form>
+
+
+        {% else %}
+        {% endif %}
+
+
 
     {% endfor%}
 

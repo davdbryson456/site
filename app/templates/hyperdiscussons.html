@@ -78,7 +78,7 @@
             {% if current_user.username == a.username or current_user.is_admin %}
 
 
-                <form action= "{{ url_for('hyperdiscussons') }}" method="post" >
+                <form action= "{{ url_for('deletepost') }}" method="post" >
 
 
                      {{ delete.postId(value = a.id) }}

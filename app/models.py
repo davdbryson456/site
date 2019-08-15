@@ -266,3 +266,7 @@ class Orders (db.Model):
 
     def __repr__(self):
         return f"Orders('{self.custname}', '{self.price}')"
+
+
+
+class Cart (db.Model): #finish this------------------------->

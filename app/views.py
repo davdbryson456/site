@@ -3,7 +3,7 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids
 from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
@@ -32,15 +32,29 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/tutorials/')
+@app.route('/tutorials/', methods=["GET", "POST"])
 @login_required
 def tutorials():
 
     if current_user.is_authorized == True:
 
+        dele = Deletevids()
+
+        if request.method == 'POST' and dele.validate_on_submit():
+
+            vidname = dele.vid_name.data
+
+            target = os.path.join(APP_ROOT, 'static/tutorial_vids/')
+
+            os.remove("/".join([target, vidname]))
+
+            flash('Video Deleted!', 'success')
+
+            return redirect(url_for('tutorials'))
+
         videos = get_uploaded_videos()
 
-        return render_template('tutorials.html', videos=videos)
+        return render_template('tutorials.html', videos=videos, dele=dele)
 
     else:
 
@@ -60,8 +74,8 @@ def hyperdiscussons():
 
     # POST SECTION  ####################################################################################
 
-
     if request.method == 'POST' and post.validate_on_submit():
+
 
         if is_filled(post.picture.data) == True:
 
@@ -93,6 +107,7 @@ def hyperdiscussons():
             return redirect(url_for('hyperdiscussons'))
 
 
+
     # COMMENT SECTION  ###############################################################################################3
     if request.method == 'POST' and comment.validate_on_submit():
 
@@ -105,6 +120,24 @@ def hyperdiscussons():
         return redirect(url_for('hyperdiscussons'))
 
 
+    content = get_posts()
+    return render_template('hyperdiscussons.html', post=post, content=content, comment=comment, delete=delete)
+
+
+
+def get_posts():
+
+    posts = db.session.query(Post).all()
+    return posts
+
+
+
+
+@app.route('/deletepost/', methods=["GET", "POST"])
+@login_required
+def deletepost():
+
+    delete = Deletepost()
 
     # DELETE POST SECTION ############################################################################################3
     if request.method == 'POST' and delete.validate_on_submit():
@@ -112,16 +145,13 @@ def hyperdiscussons():
         post_ident = delete.postId.data
         picture_path = delete.pic_name.data
 
-        if is_filled(picture_path)==True:
-
+        if is_filled(picture_path) == True:
             target = os.path.join(APP_ROOT, 'static/post_photos/')
 
             os.remove("/".join([target, picture_path]))
 
-
         del_post = Post.query.filter_by(id=post_ident).first()
         del_comments = Comment.query.filter_by(post_id=post_ident).all()
-
 
         for i in del_comments:
             db.session.delete(i)
@@ -132,19 +162,6 @@ def hyperdiscussons():
 
         flash('Post Deleted!', 'success')
         return redirect(url_for('hyperdiscussons'))
-
-
-
-
-    content = get_posts()
-    return render_template('hyperdiscussons.html', post=post, content=content, comment=comment, delete=delete)
-
-
-
-def get_posts():
-
-    posts = db.session.query(Post).all()
-    return posts
 
 
 
@@ -181,13 +198,13 @@ def eShop():
     accessories = get_accessories()
 
     item = addtocart()  # add to cart form
-    cart = [] #expound on this!
+
     if request.method == 'POST' and item.validate_on_submit(): #this is for the add to cart button
 
 
-        cart.append((item.item_name.data, item.item_price.data)) # erases list every function call
 
-        print(cart)
+
+
 
     return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories, item=item)
 
@@ -440,9 +457,15 @@ def uploads():
 
         if request.method == 'POST' and uploads.validate_on_submit():
 
+            target = os.path.join(APP_ROOT, 'static/tutorial_vids/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
             video = uploads.video.data
             videoname = secure_filename(video.filename)
-            video.save(os.path.join(app.config['UPLOAD_FOLDER'], videoname))
+
+            video.save("/".join([target, videoname]))
             flash('File Saved', 'success')
             return redirect(url_for('home'))
 
@@ -491,7 +514,7 @@ def load_user(user_id):
 def get_uploaded_videos():
     rootdir = os.getcwd()
     filenames = []
-    for subdir, dirs, files in os.walk(rootdir + './app/static/uploads'):
+    for subdir, dirs, files in os.walk(rootdir + './app/static/tutorial_vids'):
 	    for file in files:
              filenames.append(os.path.join( file).split('/')[-1])
     return filenames

@@ -77,4 +77,12 @@
     {% else %}
     {% endif %}
 
+
+
+     {% if current_user.is_admin %}
+        <h6 class="text-white">(Admin)</h6>
+    {% else %}
+    {% endif %}
+
+
 </nav>

@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms.fields import StringField, TextAreaField, PasswordField, HiddenField, IntegerField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
@@ -36,8 +36,8 @@ class Uploadvids(Form):
 
 class _Post(Form):
 
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    title = StringField('Title', [InputRequired()])
+    content = TextAreaField('Content', [InputRequired()])
     picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
 
 
@@ -85,10 +85,16 @@ class addtocart(Form):
 
     item_name = HiddenField()
     item_price = HiddenField()
+    username = HiddenField()
 
 
 class Deletepost(Form):
 
     postId = HiddenField()
     pic_name = HiddenField()
+
+
+class Deletevids(Form):
+
+    vid_name = HiddenField()
 

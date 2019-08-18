@@ -6,31 +6,33 @@
 <h1 class="jumbotron">eShop</h1>
 
     <div class="card ">
+
         <div class="card-body px-lg-5 pt-5 bg-light ">
 
-            <h3>New Books</h3>
+            <h2 class="jumbotron">New Books</h2>
 
             {% for newbook in newbooks %}
 
-                <div class ="container-fluid">
-                    {{ newbook.bookname }}<br>
-                    {{ newbook.author }}<br>
-                    {{ newbook.price }} <strong>{{ newbook.stock_status }}</strong><br>
 
-                    <img src="{{ url_for('static',filename= "newbook_pics/" + newbook.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
-                    <br>
+                <h3>{{ newbook.bookname }}</h3>
+                <h4>{{ newbook.author }}</h4>
+                <h6><strong>$</strong>{{ newbook.price }} <strong>{{ newbook.stock_status }}</strong><br></h6>
 
+                <img src="{{ url_for('static',filename= "newbook_pics/" + newbook.photopath ) }}"  class="img-fluid" alt="" height="220" width="420">
+                <br>
+                <br>
 
-                    <form action= "{{ url_for('eShop') }}" method="post" >
+                <form action= "{{ url_for('eShop') }}" method="post" >
 
-                        {{ item.item_name(value = newbook.bookname ) }}
-                        {{ item.item_price(value = newbook.price ) }}
-                        {{ item.csrf_token }}
-                        <button type="submit" class="btn btn-dark">Add to cart</button>
+                    {{ item.item_name(value = newbook.bookname ) }}
+                    {{ item.item_price(value = newbook.price ) }}
+                    {{ item.csrf_token }}
+                    <button type="submit" class="btn btn-dark">Add to cart</button>
 
-                    </form>
+                </form>
 
-                </div>
+                <br>
+                <br>
             {% endfor %}
 
 
@@ -47,13 +49,24 @@
 
             {% for usedbook in usedbooks %}
 
-                {{ usedbook.ubookname }}
-                {{ usedbook.uauthor }}
-                {{ usedbook.uprice }} {{ usedbook.ustock_status }}
+                <div class ="container-fluid">
+                    {{ usedbook.ubookname }}<br>
+                    {{ usedbook.uauthor }}<br>
+                    {{ usedbook.uprice }} <strong>{{ usedbook.ustock_status }}</strong><br>
 
-                <img>
+                    <img src="{{ url_for('static',filename= "usedbook_pics/" + usedbook.uphotopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
+                    <br>
 
-                #add button right here for hidden form submission (add to cart)
+                     <form action= "{{ url_for('eShop') }}" method="post" >
+
+                        {{ item.item_name(value = usedbook.ubookname ) }}
+                        {{ item.item_price(value = usedbook.uprice ) }}
+                        {{ item.csrf_token }}
+                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                    </form>
+
+                </div>
 
             {% endfor %}
 
@@ -68,16 +81,31 @@
 
             <h3>Supplies</h3>
 
-            {% for supply in supplies %}
 
-                {{ supply.name }}
-                {{ supply.price }} {{ supply.stock_status }}
+             {% for supply in supplies %}
 
-                <img>
+                <div class ="container-fluid">
 
-                #add button right here for hidden form submission (add to cart)
+                    {{ supply.name }}<br>
+                    {{ supply.price }} <strong>{{ supply.stock_status }}</strong><br>
+
+                    <img src="{{ url_for('static',filename= "supplies_pics/" + supply.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
+                    <br>
+
+                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                        {{ item.item_name(value = supply.name ) }}
+                        {{ item.item_price(value = supply.price ) }}
+                        {{ item.csrf_token }}
+                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                    </form>
+
+
+                </div>
 
             {% endfor %}
+
 
         </div>
     </div>
@@ -91,12 +119,23 @@
 
             {% for accessory in accessories %}
 
-                {{ accessory.name }}
-                {{ accessory.price }} {{ accessory.stock_status }}
+                <div class ="container-fluid">
+                    {{ accessory.name }}<br>
+                    {{ accessory.price }} <Strong>{{ accessory.stock_status }}</Strong><br>
 
-                <img>
+                    <img src="{{ url_for('static',filename= "accessory_pics/" + accessory.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
+                    <br>
 
-                #add button right here for hidden form submission (add to cart)
+                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                            {{ item.item_name(value = accessory.name ) }}
+                            {{ item.item_price(value = accessory.price ) }}
+                            {{ item.csrf_token }}
+                            <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                    </form>
+
+                </div>
 
             {% endfor %}
 

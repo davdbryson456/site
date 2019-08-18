@@ -199,7 +199,7 @@ def eShop():
 
     item = addtocart()  # add to cart form
 
-    if request.method == 'POST' and item.validate_on_submit(): #this is for the add to cart button
+    #if request.method == 'POST' and item.validate_on_submit(): #this is for the add to cart button
 
 
 

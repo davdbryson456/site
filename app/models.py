@@ -269,4 +269,4 @@ class Orders (db.Model):
 
 
 
-class Cart (db.Model): #finish this------------------------->
+#class Cart (db.Model): #finish this------------------------->

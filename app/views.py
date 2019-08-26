@@ -3,8 +3,8 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids
-from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage
+from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
@@ -19,10 +19,41 @@ from time import ctime
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def home():
 
-    return render_template('home.html')
+    homeform = Homepage()
+
+    if request.method == 'POST' and homeform.validate_on_submit():
+
+        pic = homeform.pic.data
+        picname = pic.filename
+        caption = homeform.caption.data
+
+        target = os.path.join(APP_ROOT, 'static/homepage_pics/')
+
+        if not os.path.isdir(target):
+            os.mkdir(target)
+
+        pic.save("/".join([target, picname]))
+
+        newpic = Homepage_pics(picname, caption)
+
+        db.session.add(newpic)
+        db.session.commit()
+        flash('Added!', 'success')
+
+        return redirect(url_for('home'))
+
+
+    def get_pics():
+
+        allpics = db.session.query(Homepage_pics).all()
+        return allpics
+
+    all_pics = get_pics()
+
+    return render_template('home.html', homeform=homeform, all_pics=all_pics)
 
 
 
@@ -380,7 +411,7 @@ def contactus():
 
         with mail.connect() as conn:
 
-            msg = Message(subject=contact.subject.data, sender="davidbryson@hotmail.com", recipients=["davidoliverbryson@gmail.com"])
+            msg = Message(subject=contact.subject.data, sender=contact.email.data, recipients=["davidoliverbryson@gmail.com"])
 
             body = ("Name:"+" "+contact.name.data+"\n" +
                     "Email:"+" "+contact.email.data+"\n" +
@@ -557,3 +588,4 @@ admin.add_view(MyModelView(UsedBook, db.session))
 admin.add_view(MyModelView(Supplies, db.session))
 admin.add_view(MyModelView(Accessories, db.session))
 admin.add_view(MyModelView(Orders, db.session))
+admin.add_view(MyModelView(Homepage_pics, db.session))

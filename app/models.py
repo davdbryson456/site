@@ -268,5 +268,19 @@ class Orders (db.Model):
         return f"Orders('{self.custname}', '{self.price}')"
 
 
+class Homepage_pics (db.Model):
 
-#class Cart (db.Model): #finish this------------------------->
+    id = db.Column(db.Integer, primary_key=True)
+
+    pic_name = db.Column(db.String(255), nullable=False)
+
+    caption = db.Column(db.String(255), nullable=True)
+
+    def __init__(self, pic_name, caption):
+
+        self.pic_name = pic_name
+        self.caption = caption
+
+
+    def __repr__(self):
+        return f"Orders('{self.pic_name}', '{self.caption}')"

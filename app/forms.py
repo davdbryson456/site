@@ -98,3 +98,9 @@ class Deletevids(Form):
 
     vid_name = HiddenField()
 
+
+class Homepage (Form):
+
+    pic = FileField('Pictures must be in jpg format', validators=[FileRequired(), FileAllowed(['jpg'], 'Pictures only!')])
+
+    caption = TextAreaField('Caption')

@@ -14,13 +14,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True  # added just to suppress a 
 db = SQLAlchemy(app)
 
 # Mail server settings
-app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
+app.config['MAIL_SERVER'] = 'mail.hyperacademics.com'
 app.config['MAIL_PORT'] = '587'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-# app.config['MAIL_DEFAULT_SENDER'] = ('David','davidbryson@hotmail.com')
-app.config['MAIL_USERNAME'] = 'davidbryson@hotmail.com'
-app.config['MAIL_PASSWORD'] = 'davdbryson7536'
+app.config['MAIL_USERNAME'] = 'noreply@hyperacademics.com'
+app.config['MAIL_PASSWORD'] = ']?^<5:ZsT.BMv'
 mail = Mail(app)
 
 

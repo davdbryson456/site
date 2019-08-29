@@ -2,16 +2,22 @@
 
 {% block main %}
 
-<h1 class="jumbotron">HyperDiscussions</h1>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 
 
-<div class="card bg-light">
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center; background-attachment:fixed;">
 
- <div class="card-body px-lg-5 pt-5">
+<br>
+<br>
+<br>
+<div class="card container">
 
- <h3>Add a Post</h3>
+ <div class="card-body">
 
-<form action= "{{ url_for('hyperdiscussons') }}" method="post" class="border border-light p-6" style="color: #757575;" enctype="multipart/form-data">
+ <h1>Add a Post</h1>
+
+<form action= "{{ url_for('hyperdiscussons') }}" method="post" class="border border-dark p-5" style="color: #757575;" enctype="multipart/form-data">
 
   <fieldset>
 
@@ -46,25 +52,26 @@
 
 
 
-<div class="card ">
+<div class="card container">
 
- <div class="card-body px-lg-5 pt-5 bg-light ">
-
-    <h3>Posts</h3>
-
-        {% for a in content %}
-
-         <div class="card">
-
-            <div class="card-body px-lg-5 pt-5 bg-light">
+ <div class="card-body ">
 
 
+    <h1>Posts</h1>
 
-            <h4>{{a.user_fname}} {{ a.user_lname }}  <small>{{a.date_posted}}</small> </h4>
+        {% for a in content |reverse %}
 
-            <h5>Title:{{ a.title }}</h5>
+         <div class="card border border-dark p-5">
 
-            <p>{{ a.content }}</p>
+            <div class="card-body ">
+
+
+
+            <h6>{{a.user_fname}} {{ a.user_lname }}  <small>{{a.date_posted}}</small> </h6>
+
+            <h2>Title:{{ a.title }}</h2>
+
+            <h4>{{ a.content }}</h4>
 
 
             {% if a.photopath %}
@@ -139,9 +146,11 @@
 
 </div>
 
+<br>
+<br>
+<br>
 
-<br>
-<br>
+</div>
 
 
 {% endblock %}

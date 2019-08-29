@@ -2,14 +2,30 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Contact Us</h1>
 
-<div class="card">
 
- <div class="card-body px-lg-5 pt-5 bg-light">
 
-    <form action="{{ url_for('contactus') }}" method="post" class="border border-light p-6" style="color: #757575;">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<div class="card container">
+
+ <div class="card-body ">
+     <br>
+     <h1>Contact Us</h1>
+     <br>
+    <form action="{{ url_for('contactus') }}" method="post" class="border border-dark p-5" style="color: #757575;">
+      <br>
       <fieldset>
 
           <div class="form-group">
@@ -36,13 +52,23 @@
         {{ contact.csrf_token }}
 
         <button type="submit" class="btn btn-dark">Submit</button>
-      </fieldset>
 
+      </fieldset>
+      <br>
     </form>
 
  </div>
 
 </div>
- <br>
- <br>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+</div>
+
+
 {% endblock %}

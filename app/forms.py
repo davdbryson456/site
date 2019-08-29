@@ -104,3 +104,28 @@ class Homepage (Form):
     pic = FileField('Pictures must be in jpg format', validators=[FileRequired(), FileAllowed(['jpg'], 'Pictures only!')])
 
     caption = TextAreaField('Caption')
+
+
+class Resources (Form):
+
+    r_title = StringField('Title', [InputRequired()])
+    r_content = TextAreaField('Content', [InputRequired()])
+    r_picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+
+
+class resources_del (Form):
+
+    p_Id = HiddenField()
+    picName = HiddenField()
+
+
+class resource_files (Form):
+
+    File = FileField('', validators=[FileRequired(), FileAllowed(['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'rtf', 'html', 'zip', 'mp3', 'wma', 'mpg', 'flv', 'avi', 'jpg', 'jpeg', 'png', 'gif', 'pptx'], 'Files!')])
+
+
+class file_del (Form):
+
+    fileName = HiddenField()
+
+    file_id = HiddenField()

@@ -2,35 +2,227 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Resources</h1>
 
 
-    <div class="card ">
 
-        <div class="card-body px-lg-5 pt-5 bg-light ">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 
-            <h4>Posts</h4>
 
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center; background-attachment:fixed;">
+
+<br>
+<br>
+<br>
+<br>
+
+            {% if current_user.is_admin %}
+
+                <div class="card container ">
+
+                    <div class="card-body ">
+
+                    <h1>Add a Post</h1>
+
+                    <form action= "{{ url_for('resources') }}" method="post" class="border border-dark p-5" style="color: #757575;" enctype="multipart/form-data">
+
+                      <fieldset>
+
+                          <div class="form-group">
+                            <label for="exampleInputPassword1">Title</label>
+                            {{ rform.r_title(class="form-control") }}
+                          </div>
+
+                          <div class="form-group">
+                            <label for="exampleInputPassword1">Content</label>
+                            {{ rform.r_content(class="form-control")}}
+                          </div>
+
+                          <div class="form-group">
+                              <label for="exampleInputPassword1">Picture Upload <strong>(Optional) .jpg Format only!</strong></label> <br>
+                            {{ rform.r_picture}}
+                          </div>
+
+
+                          {{rform.csrf_token }}
+                          <br>
+                        <button type="submit" class="btn btn-dark">Post</button>
+                      </fieldset>
+                    </form>
+                    <br>
+                    <br>
+
+
+                    <h1>Add a File</h1>
+
+                    <form action= "{{ url_for('resources') }}" method="post" class="border border-dark p-5" style="color: #757575;" enctype="multipart/form-data">
+
+                      <fieldset>
+
+                          <div class="form-group">
+                              <label for="exampleInputPassword1">File Upload </label><br>
+                            {{ file.File}}
+                          </div>
+
+                          {{file.csrf_token }}
+                          <br>
+                        <button type="submit" class="btn btn-dark">Upload</button>
+                      </fieldset>
+                    </form>
 
 
         </div>
+    </div>
 
+
+
+
+ {% endif %}
+
+    <br>
+
+    <div  class="card container ">
+
+        <div class="card-body ">
+
+                    <h1>Admin Posts</h1>
+
+                        <div  class="card container border border-dark p-5">
+
+                            <div class="card-body ">
+
+                            {% for w in news |reverse %}
+
+                                <div  class="card container">
+
+                                    <div class="card-body">
+
+                                            <h6>{{w.userfname}} {{ w.userlname }}  <small>{{w.n_Dateposted}}</small> </h6>
+
+                                            <h2>Title:{{ w.n_title }}</h2>
+
+                                            <h4>{{ w.n_content }}</h4>
+
+
+                                            {% if w.photopath %}
+                                                <img src="{{ url_for('static',filename= "resource_photos/" + w.photopath ) }}"  class="img-fluid" alt="" height="420" width="620">
+                                                <br>
+                                            {% else %}
+                                            {% endif %}
+                                            <br>
+
+
+                                            {% if  current_user.is_admin %}
+
+
+                                                <form action= "{{ url_for('resources_delete') }}" method="post" >
+
+
+                                                     {{ uiop.p_Id(value = w.id) }}
+
+                                                     {{uiop.picName(value = w.photopath)}}
+
+                                                     {{ uiop.csrf_token }}
+
+                                                      <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                                                </form>
+
+                                                <br>
+                                                <br>
+
+                                            {% else %}
+                                            {% endif %}
+
+
+
+                                    </div>
+                                </div>
+                                <br>
+                            {% endfor %}
+
+                            </div>
+                        </div>
+        </div>
     </div>
 
 
     <br>
 
-    <div class="card ">
-
-        <div class="card-body px-lg-5 pt-5 bg-light ">
-
-            <h4>Useful Files</h4>
 
 
 
+
+    <div class="card container ">
+
+        <div class="card-body  ">
+
+            <h1>Useful Files</h1>
+
+                <div class="card container border border-dark p-5">
+
+                    <div class="card-body  ">
+
+                              <style>
+                                    .flex-container {
+                                      display: flex;
+                                      flex-wrap: wrap;
+
+                                    }
+
+                              </style>
+
+                       <div class="flex-container">
+
+                        {% for file in newfiles %}
+
+                                <div class="border border-dark p-2">
+                                    <a href="{{ url_for('static',filename= "resource_files/"+ file.file_name ) }}" download>
+
+                                        <img src="{{ url_for('static',filename= "resource_files/document.jpg"  ) }}" alt="doc" width="114" height="122"><br>
+                                        <small class="text-dark">{{ file.file_name }}</small>
+
+                                    </a>
+
+                                </div>
+
+
+                                {% if current_user.is_admin %}
+
+
+                                     <form action= "{{ url_for('del_file') }}" method="post" >
+
+
+                                                     {{ filedel.file_id(value = file.id) }}
+
+                                                     {{filedel.fileName(value = file.file_name)}}
+
+                                                     {{ filedel.csrf_token }}
+
+                                                      <button type="submit" class="btn btn-outline-info">Delete File</button>
+
+                                       </form>
+
+
+
+                                {% endif %}
+
+                        {% endfor %}
+
+                       </div>
+
+                    </div>
+
+                </div>
         </div>
 
     </div>
+
+    <br>
+    <br>
+</div>
+
+
+
 
 
 

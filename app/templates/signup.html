@@ -2,55 +2,79 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Sign up</h1>
-
-<div class="card">
-
- <div class="card-body px-lg-5 pt-5 bg-light">
 
 
-<form action= "{{ url_for('signup') }}" method="post" class="border border-light p-6" style="color: #757575;">
-  <fieldset>
 
-      <div class="form-group">
-        <label for="exampleInputPassword1">First Name</label>
-        {{ signupForm.firstname(class="form-control") }}
-      </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 
-      <div class="form-group">
-        <label for="exampleInputPassword1">Last Name</label>
-        {{ signupForm.lastname(class="form-control")}}
-      </div>
 
-      <div class="form-group">
-        <label for="exampleInputPassword1">New Username</label>
-        {{ signupForm.username(class="form-control") }}
-      </div>
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center; background-attachment:fixed;">
 
-    <div class="form-group">
-      <label for="exampleInputEmail1">Email address</label>
-       {{ signupForm.email(class="form-control")}}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+
+    <div class="card container">
+
+     <div class="card-body">
+    <br>
+    <h1>Sign up</h1>
+    <br>
+    <form action= "{{ url_for('signup') }}" method="post" class="border border-dark p-5" style="color: #757575;">
+      <fieldset>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">First Name</label>
+            {{ signupForm.firstname(class="form-control") }}
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Last Name</label>
+            {{ signupForm.lastname(class="form-control")}}
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">New Username</label>
+            {{ signupForm.username(class="form-control") }}
+          </div>
+
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+           {{ signupForm.email(class="form-control")}}
+        </div>
+
+        <div class="form-group">
+          <label for="exampleInputPassword1">New Password</label>
+           {{ signupForm.password(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+          <label for="exampleInputPassword1">Confirm Password</label>
+           {{ signupForm.confirm(class="form-control") }}
+        </div>
+
+        {{signupForm.csrf_token }}
+
+        <button type="submit" class="btn btn-dark">Sign Up</button>
+      </fieldset>
+    </form>
+
+     </div>
+
     </div>
 
-    <div class="form-group">
-      <label for="exampleInputPassword1">New Password</label>
-       {{ signupForm.password(class="form-control") }}
-    </div>
-
-    <div class="form-group">
-      <label for="exampleInputPassword1">Confirm Password</label>
-       {{ signupForm.confirm(class="form-control") }}
-    </div>
-
-    {{signupForm.csrf_token }}
-
-    <button type="submit" class="btn btn-dark">Sign Up</button>
-  </fieldset>
-</form>
-
- </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 </div>
-<br>
-<br>
+
 {% endblock %}

@@ -2,6 +2,52 @@
 
 {% block main %}
 
-<h1 class="jumbotron">About Us</h1>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
+
+    <br>
+    <br>
+    <br>
+
+    <div class="card container text-black ">
+        <br>
+        <br>
+        <div class="border border-dark p-4">
+
+                <h1>About Us!</h1>
+                <br>
+                <h4>HyperAcademics, over the last year, has been tried, tested and proven
+                to be the best destination for resources that supplement and augment
+                students’ learning experience at tertiary level.We have devised a mechanism that brings together all the needs of
+                students under one umbrella, packaged and delivered in ways that have
+                never been done before in this market.</h4>
+
+                <br>
+                <br>
+                <h3><strong>OUR VISION</strong></h3>
+
+                <h4>To be the premiere destination for the supply of supplement academic
+                solutions.</h4>
+                <br>
+                <br>
+                <h3><strong>OUR MISSION</strong></h3>
+
+                <h4>To skilfully consolidate tools, techniques and resources under one
+                umbrella so that all may have access to the keys that unlock the doors
+                that guarantee student success and wholistic professional development.</h4>
+                <br>
+                <br>
+        </div>
+        <br>
+        <br>
+
+    </div>
+    <br>
+    <br>
+    <br>
+
+    </div>
 
 {% endblock %}

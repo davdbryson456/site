@@ -3,8 +3,8 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage
-from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del
+from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
@@ -396,10 +396,148 @@ def signup():
 
 
 
-@app.route('/resources/')
+@app.route('/resources/', methods=["GET", "POST"])
 def resources():
 
-    return render_template('resources.html')
+    rform = Resources()
+
+    uiop = resources_del()
+
+    file = resource_files()
+
+    filedel = file_del()
+
+    if request.method == 'POST' and rform.validate_on_submit():
+
+        if is_filled(rform.r_picture.data) == True:
+
+            target = os.path.join(APP_ROOT, 'static/resource_photos/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            rphoto = rform.r_picture.data
+            rphotoname = rphoto.filename
+            rphoto.save("/".join([target, rphotoname]))
+
+            postTime = ctime()
+            newspost = News(rform.r_title.data, rform.r_content.data, current_user.first_name, current_user.last_name, postTime, rphotoname, current_user.username)
+            db.session.add(newspost)
+            db.session.commit()
+            flash('Posted!', 'success')
+            return redirect(url_for('resources'))
+
+        else:
+
+            qwerty = ctime()
+
+            rphotoname = None
+            newspost = News(rform.r_title.data, rform.r_content.data, current_user.first_name, current_user.last_name, qwerty, rphotoname, current_user.username)
+            db.session.add(newspost)
+            db.session.commit()
+            flash('Posted!', 'success')
+            return redirect(url_for('resources'))
+
+
+    if request.method == 'POST' and file.validate_on_submit():
+
+        target = os.path.join(APP_ROOT, 'static/resource_files/')
+
+        if not os.path.isdir(target):
+            os.mkdir(target)
+
+
+        rfile = file.File.data
+        rfilename = rfile.filename
+        rfile.save("/".join([target, rfilename]))
+
+        newfile = Filename(rfilename)
+
+        db.session.add(newfile)
+        db.session.commit()
+        flash('File Added!', 'success')
+
+        return redirect(url_for('resources'))
+
+
+    def getPostss():
+
+        posts = db.session.query(News).all()
+        return posts
+
+
+    def get_filenames():
+
+        files = db.session.query(Filename).all()
+        return files
+
+
+
+    news = getPostss()
+
+    newfiles = get_filenames()
+
+    return render_template('resources.html', rform=rform, news=news, uiop=uiop, file=file, newfiles=newfiles, filedel=filedel)
+
+
+
+
+
+
+@app.route('/resources_delete/', methods=["GET", "POST"])
+@login_required
+def resources_delete():
+
+    uiop = resources_del()
+
+
+    if request.method == 'POST' and uiop.validate_on_submit():
+
+        post = uiop.p_Id.data
+        picture = uiop.picName.data
+
+        if is_filled(picture) == True:
+
+            target = os.path.join(APP_ROOT, 'static/resource_photos/')
+
+            os.remove("/".join([target, picture]))
+
+        del_post = News.query.filter_by(id=post).first()
+
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Post Deleted!', 'success')
+        return redirect(url_for('resources'))
+
+
+
+@app.route('/del_file/', methods=["GET", "POST"])
+@login_required
+def del_file():
+
+    filedel = file_del()
+
+    if request.method == 'POST' and filedel.validate_on_submit():
+
+        fileid = filedel.file_id.data
+        filename = filedel.fileName.data
+
+
+        target = os.path.join(APP_ROOT, 'static/resource_files/')
+
+        os.remove("/".join([target, filename]))
+
+        zxc = Filename.query.filter_by(id=fileid).first()
+
+        db.session.delete(zxc)
+        db.session.commit()
+
+        flash('File Deleted!', 'success')
+        return redirect(url_for('resources'))
+
+
 
 
 @app.route('/contactus/', methods=["GET", "POST"])
@@ -589,3 +727,5 @@ admin.add_view(MyModelView(Supplies, db.session))
 admin.add_view(MyModelView(Accessories, db.session))
 admin.add_view(MyModelView(Orders, db.session))
 admin.add_view(MyModelView(Homepage_pics, db.session))
+admin.add_view(MyModelView(News, db.session))
+admin.add_view(MyModelView(Filename, db.session))

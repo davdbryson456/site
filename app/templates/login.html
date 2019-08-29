@@ -2,13 +2,25 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Login</h1>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 
-<div class="card">
 
- <div class="card-body px-lg-5 pt-2 bg-light">
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center; background-attachment:fixed;">
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="card container">
+
+ <div class="card-body ">
  <br>
- <form action="{{ url_for('login') }}" method="post" class="border border-light p-5" style="color: #757575;">
+
+ <h1>Login</h1>
+ <br>
+ <form action="{{ url_for('login') }}" method="post" class="border border-dark p-5" style="color: #757575;">
   <fieldset>
     <legend>Please enter your Username and Password</legend>
 
@@ -33,13 +45,18 @@
      <br>
      <small id="emailHelp" class="form-text text-muted">Not yet a user?</small>
      <h4><a class="text-dark" href="{{ url_for('signup') }}">Sign up</a></h4>
-</form>
 
+</form>
 
 
  </div>
 </div>
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
+</div>
 
 {% endblock %}

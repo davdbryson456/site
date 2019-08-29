@@ -284,3 +284,63 @@ class Homepage_pics (db.Model):
 
     def __repr__(self):
         return f"Orders('{self.pic_name}', '{self.caption}')"
+
+
+
+
+class News(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    n_title = db.Column(db.String(255), nullable=False)
+
+    n_Dateposted = db.Column(db.DateTime, nullable=False)
+
+    n_content = db.Column(db.Text, nullable=False)
+
+    userfname = db.Column(db.String(100), nullable=False)
+
+    userlname = db.Column(db.String(100), nullable=False)
+
+    photopath = db.Column(db.String(255), nullable=True)
+
+    n_username = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, n_title, n_content, userfname, userlname, n_Dateposted, photopath, n_username):
+
+        self.n_title = n_title
+
+        self.n_content = n_content
+
+        self.userfname = userfname
+
+        self.userlname = userlname
+
+        self.n_Dateposted = n_Dateposted
+
+        self.photopath = photopath
+
+        self.n_username = n_username
+
+
+
+
+    def __repr__(self):
+        return f"Post('{self.n_title}', '{self.n_Dateposted}')"
+
+
+
+
+class Filename (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    file_name = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, file_name):
+
+        self.file_name = file_name
+
+
+    def __repr__(self):
+        return f"Filename('{self.file_name}')"

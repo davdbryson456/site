@@ -24,7 +24,9 @@ class Users(db.Model, UserMixin):
 
     is_authorized = db.Column(db.Boolean, default=False)
 
-    def __init__(self, first_name, last_name, username, password, email):
+    year = db.Column(db.String(255))
+
+    def __init__(self, first_name, last_name, username, password, email, year):
 
         self.first_name = first_name
 
@@ -36,6 +38,7 @@ class Users(db.Model, UserMixin):
 
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
+        self.year = year
 
 
     def is_authenticated(self):
@@ -138,7 +141,7 @@ class NewBook (db.Model):
 
     bookname = db.Column(db.String(150), nullable=False)
 
-    author = db.Column(db.String(150), nullable=False)
+    publisher = db.Column(db.String(150), nullable=False)
 
     price = db.Column(db.Integer)
 
@@ -146,18 +149,48 @@ class NewBook (db.Model):
 
     stock_status = db.Column(db.String(255), nullable=False)
 
+    ISBN13 = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, bookname, author, price, photopath, stock_status):
+    ISBN10 = db.Column(db.String(255), nullable=False)
+
+    series = db.Column(db.String(255), nullable=False)
+
+    Format = db.Column(db.String(255), nullable=False)
+
+    publication_date = db.Column(db.String(255), nullable=False)
+
+    dimensions = db.Column(db.String(255), nullable=False)
+
+    language = db.Column(db.String(255), nullable=False)
+
+    weight = db.Column(db.String(255), nullable=False)
+
+    description = db.Column(db.String(255), nullable=False)
+
+
+
+    def __init__(self, bookname, publisher, price, photopath, stock_status, ISBN13, ISBN10, series, Format, publication_date, dimensions, language, weight, description):
 
         self.bookname = bookname
-        self.author = author
+        self.publisher = publisher
         self.price = price
         self.photopath = photopath
         self.stock_status = stock_status
+        self.ISBN13 = ISBN13
+        self.ISBN10 = ISBN10
+        self.series = series
+        self.Format = Format
+        self.publication_date = publication_date
+        self.dimensions = dimensions
+        self.language = language
+        self.weight = weight
+        self.description = description
 
     def __repr__(self):
 
         return f"NewBook('{self.bookname}', '{self.price}')"
+
+
 
 
 
@@ -176,14 +209,41 @@ class UsedBook (db.Model):
 
     ustock_status = db.Column(db.String(255), nullable=False)
 
+    uISBN13 = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, ubookname, uauthor, uprice, uphotopath, ustock_status):
+    uISBN10 = db.Column(db.String(255), nullable=False)
+
+    uuseries = db.Column(db.String(255), nullable=False)
+
+    uFormat = db.Column(db.String(255), nullable=False)
+
+    upublication_date = db.Column(db.String(255), nullable=False)
+
+    udimensions = db.Column(db.String(255), nullable=False)
+
+    ulanguage = db.Column(db.String(255), nullable=False)
+
+    uweight = db.Column(db.String(255), nullable=False)
+
+    udescription = db.Column(db.String(255), nullable=False)
+
+
+    def __init__(self, ubookname, uauthor, uprice, uphotopath, ustock_status, uISBN13, uISBN10, uuseries, uFormat, upublication_date, udimensions, ulanguage, uweight, udescription):
 
         self.ubookname = ubookname
         self.uauthor = uauthor
         self.uprice = uprice
         self.uphotopath = uphotopath
         self.ustock_status = ustock_status
+        self.uISBN13 = uISBN13
+        self.uISBN10 = uISBN10
+        self.uuseries = uuseries
+        self.uFormat = uFormat
+        self.upublication_date = upublication_date
+        self.udimensions = udimensions
+        self.ulanguage = ulanguage
+        self.uweight = uweight
+        self.udescription = udescription
 
 
     def __repr__(self):
@@ -203,13 +263,15 @@ class Supplies (db.Model):
 
     stock_status = db.Column(db.String(255), nullable=False)
 
+    description = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, name, price, photopath, stock_status):
+    def __init__(self, name, price, photopath, stock_status, description):
 
         self.name = name
         self.price = price
         self.photopath = photopath
         self.stock_status = stock_status
+        self.description = description
 
 
     def __repr__(self):
@@ -229,14 +291,15 @@ class Accessories(db.Model):
 
     stock_status = db.Column(db.String(255), nullable=False)
 
+    description = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, name, price, photopath, stock_status):
+    def __init__(self, name, price, photopath, stock_status, description):
 
         self.name = name
         self.price = price
         self.photopath = photopath
         self.stock_status = stock_status
-
+        self.description = description
 
     def __repr__(self):
         return f"Accessories('{self.name}', '{self.price}')"
@@ -247,25 +310,36 @@ class Orders (db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    custname = db.Column(db.String(150), nullable=False)
+    custfname = db.Column(db.String(150), nullable=False)
 
-    ordernum = db.Column(db.Integer)
+    custlname = db.Column(db.String(150), nullable=False)
 
-    order = db.Column(db.String(200), nullable=False)
+    phonenum = db.Column(db.String(200), nullable=False)
 
     total = db.Column(db.Integer)
 
+    date = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, custname, ordernum, order, total):
+    pay_option = db.Column(db.String(150), nullable=False)
 
-        self.custname = custname
-        self.ordernum = ordernum
-        self.order = order
+
+    def __init__(self, custfname, custlname, phonenum, total, date, pay_option):
+
+        self.custfname = custfname
+        self.custlname = custlname
+        self.phonenum = phonenum
         self.total = total
+        self.date = date
+        self.pay_option = pay_option
 
 
     def __repr__(self):
         return f"Orders('{self.custname}', '{self.price}')"
+
+
+
+
+
 
 
 class Homepage_pics (db.Model):
@@ -344,3 +418,28 @@ class Filename (db.Model):
 
     def __repr__(self):
         return f"Filename('{self.file_name}')"
+
+
+
+class Cart(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(150), nullable=False)
+
+    item_name = db.Column(db.String(150), nullable=False)
+
+    price = db.Column(db.Integer)
+
+    qty = db.Column(db.Integer)
+
+    def __init__(self, username, item_name, price, qty):
+
+        self.username = username
+        self.item_name = item_name
+        self.qty = qty
+        self.price = int(price)*int(qty)
+
+
+    def __repr__(self):
+        return f"Cart('{self.item_name}')"

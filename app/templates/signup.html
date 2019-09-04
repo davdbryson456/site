@@ -58,6 +58,11 @@
            {{ signupForm.confirm(class="form-control") }}
         </div>
 
+        <div class="form-group">
+          <label for="exampleInputPassword1">What year are you in?</label>
+           {{ signupForm.year(class="custom-select") }}
+        </div>
+
         {{signupForm.csrf_token }}
 
         <button type="submit" class="btn btn-dark">Sign Up</button>

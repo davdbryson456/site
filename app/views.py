@@ -1,15 +1,17 @@
 import os
+import uuid
 from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del
-from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename
+from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del, eshop_del, cartt_del,checkoutt
+from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename, Cart
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from . import login_manager
+
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import timedelta
@@ -196,31 +198,37 @@ def deletepost():
 
 
 
+def get_newbooks():
+
+    post = db.session.query(NewBook).all()
+    return post
+
+
+def get_usedBooks():
+
+    post = db.session.query(UsedBook).all()
+    return post
+
+
+def get_supplies():
+
+    post = db.session.query(Supplies).all()
+    return post
+
+
+def get_accessories():
+
+    post = db.session.query(Accessories).all()
+    return post
+
 
 
 @app.route('/eShop/', methods=["GET", "POST"])
+@login_required
 def eShop():
 
-    def get_newbooks():
-
-        post = db.session.query(NewBook).all()
-        return post
-
-    def get_usedBooks():
-
-        post = db.session.query(UsedBook).all()
-        return post
-
-
-    def get_supplies():
-
-        post = db.session.query(Supplies).all()
-        return post
-
-    def get_accessories():
-
-        post = db.session.query(Accessories).all()
-        return post
+    items = addtocart()  # add to cart form
+    eshop = eshop_del()
 
 
     newbooks = get_newbooks()
@@ -228,17 +236,123 @@ def eShop():
     supplies = get_supplies()
     accessories = get_accessories()
 
-    item = addtocart()  # add to cart form
 
-    #if request.method == 'POST' and item.validate_on_submit(): #this is for the add to cart button
+    if request.method == 'POST':
+
+        itemname = items.product_name.data
+        itemqty = items.qty.data
+        itemprice = items.item_price.data
+
+
+
+        newitem = Cart(current_user.username, itemname, itemprice, itemqty)
+        db.session.add(newitem)
+        db.session.commit()
+
+        flash('Added to cart!', 'success')
+        return redirect(url_for('eShop'))
+
+
+    return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories, items=items, eshop=eshop)
+
+
+
+
+
+@app.route('/cart/', methods=["GET", "POST"])
+@login_required
+def cart():
+
+    cart = cartt_del()
+
+    cart_items = Cart.query.filter_by(username=current_user.username).all()
+
+    return render_template('cart.html', cart_items=cart_items, cart=cart)
+
+
+
+
+
+@app.route('/cart_del/', methods=["GET", "POST"])
+@login_required
+def cart_del():
+
+    cart = cartt_del()
+
+    if request.method == 'POST' and cart.validate_on_submit():
+
+        del_item = Cart.query.filter_by(id=cart.cart_id.data).first()
+
+        db.session.delete(del_item)
+        db.session.commit()
+
+        return redirect(url_for('cart'))
 
 
 
 
 
 
-    return render_template('eShop.html', newbooks=newbooks, usedbooks=usedbooks, supplies=supplies, accessories=accessories, item=item)
+@app.route('/checkout/', methods=["GET", "POST"])
+@login_required
+def checkout():
+    payment = checkoutt()
 
+    cart_stuff = Cart.query.filter_by(username=current_user.username).all()
+
+    if request.method == 'POST':
+
+        if cart_stuff ==[]:
+
+            flash('Your cart is empty', 'danger')
+        else:
+            return render_template('checkout.html', cart_stuff=cart_stuff, payment=payment)
+
+    return redirect(url_for('eShop'))
+
+
+
+@app.route('/placeorder/', methods=["GET", "POST"])
+@login_required
+def placeorder():
+
+    if request.method == 'POST':
+
+        payment = checkoutt()
+        pay_options = payment.payment.data
+        phone_num = payment.phone_num.data
+        total = payment.total.data
+        firstname = current_user.first_name
+        lastname = current_user.last_name
+
+        cart_stuff = Cart.query.filter_by(username=current_user.username).all()
+
+
+        with mail.connect() as conn:
+            msg = Message(subject="New Order!", sender="noreply@hyperacademics.com", recipients=["davidbryson@hotmail.com"])
+
+            msg.html = render_template('neworder.html', cart_stuff=cart_stuff, total=total, pay_options=pay_options,
+                                           phone_num=phone_num, firstname=firstname, lastname=lastname)
+
+            conn.send(msg)
+
+
+        with mail.connect() as conn:
+            msg = Message(subject="Order Confirmation", sender="noreply@hyperacademics.com", recipients=[current_user.email])
+
+            msg.html = render_template('custconfirm.html', cart_stuff=cart_stuff, total=total, pay_options=pay_options,
+                                           phone_num=phone_num, firstname=firstname, lastname=lastname)
+
+            conn.send(msg)
+
+
+        for a in cart_stuff:
+            db.session.delete(a)
+            db.session.commit()
+
+        flash('A Order Confirmation will be sent to your email,you will be contacted in 24 hours!', 'success')
+
+        return redirect(url_for('checkout'))
 
 
 
@@ -261,6 +375,15 @@ def addstock():
             npicture = Nbook.picture.data
             npicture_name = npicture.filename
             stock_status = "In Stock"
+            ISBN10 = Nbook.ISBN10.data
+            ISBN13 = Nbook.ISBN13.data
+            series = Nbook.series.data
+            Format = Nbook.Format.data
+            publication_date = Nbook.publication_date.data
+            dimensions = Nbook.dimensions.data
+            language = Nbook.language.data
+            weight = Nbook.weight.data
+            description = Nbook.description.data
 
             target = os.path.join(APP_ROOT, 'static/newbook_pics/')
 
@@ -269,7 +392,7 @@ def addstock():
 
             npicture.save("/".join([target, npicture_name]))
 
-            new_book = NewBook(bname, bauthor, bprice, npicture_name, stock_status)
+            new_book = NewBook(bname, bauthor, bprice, npicture_name, stock_status, ISBN13, ISBN10, series, Format, publication_date, dimensions, language, weight, description)
 
             db.session.add(new_book)
             db.session.commit()
@@ -287,6 +410,15 @@ def addstock():
             cpicture = Ubook.upicture.data
             cpicture_name = cpicture.filename
             stock_status = "In Stock"
+            cISBN10 = Ubook.uISBN10.data
+            cISBN13 = Ubook.uISBN13.data
+            cseries = Ubook.useries.data
+            cFormat = Ubook.uFormat.data
+            cpublication_date = Ubook.upublication_date.data
+            cdimensions = Ubook.udimensions.data
+            clanguage = Ubook.ulanguage.data
+            cweight = Ubook.uweight.data
+            cdescription = Ubook.udescription.data
 
             target = os.path.join(APP_ROOT, 'static/usedbook_pics/')
 
@@ -295,7 +427,7 @@ def addstock():
 
             cpicture.save("/".join([target, cpicture_name]))
 
-            used_book = UsedBook(cname, cauthor, cprice, cpicture_name, stock_status)
+            used_book = UsedBook(cname, cauthor, cprice, cpicture_name, stock_status, cISBN13, cISBN10, cseries, cFormat, cpublication_date, cdimensions, clanguage, cweight, cdescription )
 
             db.session.add(used_book)
             db.session.commit()
@@ -311,6 +443,7 @@ def addstock():
             stock_status = "In Stock"
             spicture = supply.picture.data
             spicture_name = spicture.filename
+            sdescription = supply.description.data
 
             target = os.path.join(APP_ROOT, 'static/supplies_pics/')
 
@@ -319,7 +452,7 @@ def addstock():
 
             spicture.save("/".join([target, spicture_name]))
 
-            new_supply = Supplies(sname, sprice, spicture_name, stock_status)
+            new_supply = Supplies(sname, sprice, spicture_name, stock_status, sdescription)
 
             db.session.add(new_supply)
             db.session.commit()
@@ -334,6 +467,7 @@ def addstock():
             stock_status = "In Stock"
             epicture = acc.picture.data
             epicture_name = epicture.filename
+            edescription = acc.description.data
 
             target = os.path.join(APP_ROOT, 'static/accessory_pics/')
 
@@ -342,7 +476,7 @@ def addstock():
 
             epicture.save("/".join([target, epicture_name]))
 
-            new_accessory = Accessories(ename, eprice, epicture_name, stock_status)
+            new_accessory = Accessories(ename, eprice, epicture_name, stock_status, edescription)
 
             db.session.add(new_accessory)
             db.session.commit()
@@ -359,6 +493,107 @@ def addstock():
 
 
 
+
+@app.route('/nbook_del/', methods=["GET", "POST"])
+@login_required
+def nbook_del():
+
+    eshop = eshop_del()
+
+    if request.method == 'POST' and eshop.validate_on_submit():
+
+        item = eshop.item_id.data
+        picture = eshop.pic_Name.data
+
+
+        target = os.path.join(APP_ROOT, 'static/newbook_pics/')
+
+        os.remove("/".join([target, picture]))
+
+        del_post = NewBook.query.filter_by(id=item).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Item Deleted!', 'success')
+        return redirect(url_for('eShop'))
+
+
+
+@app.route('/ubook_del/', methods=["GET", "POST"])
+@login_required
+def ubook_del():
+
+    eshop = eshop_del()
+
+    if request.method == 'POST' and eshop.validate_on_submit():
+
+        item = eshop.item_id.data
+        picture = eshop.pic_Name.data
+
+
+        target = os.path.join(APP_ROOT, 'static/usedbook_pics/')
+
+        os.remove("/".join([target, picture]))
+
+        del_post = UsedBook.query.filter_by(id=item).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Item Deleted!', 'success')
+        return redirect(url_for('eShop'))
+
+
+
+@app.route('/supply_del/', methods=["GET", "POST"])
+@login_required
+def supply_del():
+
+    eshop = eshop_del()
+
+    if request.method == 'POST' and eshop.validate_on_submit():
+
+        item = eshop.item_id.data
+        picture = eshop.pic_Name.data
+
+
+        target = os.path.join(APP_ROOT, 'static/supplies_pics/')
+
+        os.remove("/".join([target, picture]))
+
+        del_post = Supplies.query.filter_by(id=item).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Item Deleted!', 'success')
+        return redirect(url_for('eShop'))
+
+
+@app.route('/acc_del/', methods=["GET", "POST"])
+@login_required
+def acc_del():
+    eshop = eshop_del()
+
+    if request.method == 'POST' and eshop.validate_on_submit():
+
+        item = eshop.item_id.data
+        picture = eshop.pic_Name.data
+
+        target = os.path.join(APP_ROOT, 'static/accessory_pics/')
+
+        os.remove("/".join([target, picture]))
+
+        del_post = Accessories.query.filter_by(id=item).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Item Deleted!', 'success')
+        return redirect(url_for('eShop'))
+
+
 @app.route('/signup/', methods=["GET", "POST"])
 def signup():
 
@@ -367,7 +602,7 @@ def signup():
     if request.method == 'POST' and signupForm.validate_on_submit():
 
         try:
-            user = Users(signupForm.firstname.data, signupForm.lastname.data, signupForm.username.data, signupForm.password.data, signupForm.email.data)
+            user = Users(signupForm.firstname.data, signupForm.lastname.data, signupForm.username.data, signupForm.password.data, signupForm.email.data, signupForm.year.data)
             db.session.add(user)
             db.session.commit()
 
@@ -375,11 +610,11 @@ def signup():
 
             with mail.connect() as conn:
 
-                msg = Message(subject="Welcome to HyperAcademics!", sender="davidbryson@hotmail.com",
+                msg = Message(subject="Welcome to HyperAcademics!", sender="noreply@hyperacademics.com",
                               recipients=[signupForm.email.data])
 
-                body = ("Your Username is:"+" "+signupForm.username.data+"\n" +
-                        "Please wait for admin approval before you are able to sign in.")
+                body = ("Your Username is:"+" "+signupForm.username.data)
+
 
                 msg.body = (body)
 
@@ -549,7 +784,7 @@ def contactus():
 
         with mail.connect() as conn:
 
-            msg = Message(subject=contact.subject.data, sender=contact.email.data, recipients=["davidoliverbryson@gmail.com"])
+            msg = Message(subject=contact.subject.data, sender=contact.email.data, recipients=["admin@hyperacademics.com"])
 
             body = ("Name:"+" "+contact.name.data+"\n" +
                     "Email:"+" "+contact.email.data+"\n" +
@@ -603,6 +838,10 @@ def login():
             flash('Username or Password is incorrect.', 'danger')
 
     return render_template('login.html', login=login)
+
+
+
+
 
 
 @app.route('/logout/')
@@ -729,3 +968,4 @@ admin.add_view(MyModelView(Orders, db.session))
 admin.add_view(MyModelView(Homepage_pics, db.session))
 admin.add_view(MyModelView(News, db.session))
 admin.add_view(MyModelView(Filename, db.session))
+admin.add_view(MyModelView(Cart, db.session))

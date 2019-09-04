@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<h2><u>Your Order</u></h2>
+
+<h4>Hello {{ firstname }}  {{ lastname }},</h4>
+
+<h4>Thank you for your order on our eShop!</h4>
+<h4>Preferred method of payment was:{{ pay_options }}</h4>
+<h4>You will be contacted in 24 hours.</h4>
+<br>
+
+<h4>Your Order Details</h4>
+{% for order in cart_stuff %}
+
+    <p>Item name:{{ order.item_name }}</p>
+    <p>Item Quantity:{{ order.qty }}</p>
+    <hr>
+
+{% endfor %}
+
+<h5>Total: ${{ total }}</h5>
+
+<footer>
+<hr>
+<h4>HyperAcademics</h4>
+</footer>
+</html>

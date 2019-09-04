@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+{% block main %}
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
+    <br>
+    <br>
+    <div class="card container border border-dark p-5">
+
+        <div class="card body border border-dark p-5">
+
+            <h2>Forgot password</h2>
+
+
+             <form action= "{{ url_for('forgot_pass') }}" method="post" >
+
+                    <label for="exampleInputEmail1">Enter your Email for a reset link to be sent</label>
+                        {{ forgot.email(class="form-control") }}
+                        {{ forgot.csrf_token }}
+                    <br>
+                    <button type="submit" class="btn  btn-dark">Reset</button>
+             </form>
+        </div>
+
+    </div>
+
+    <br>
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

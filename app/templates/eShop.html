@@ -1,151 +1,346 @@
 {% extends "base.html" %}
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 {% block main %}
 
-<h1 class="jumbotron">eShop</h1>
-
-    <div class="card ">
-
-        <div class="card-body px-lg-5 pt-5 bg-light ">
-
-            <h2 class="jumbotron">New Books</h2>
-
-            {% for newbook in newbooks %}
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
 
 
-                <h3>{{ newbook.bookname }}</h3>
-                <h4>{{ newbook.author }}</h4>
-                <h6><strong>$</strong>{{ newbook.price }} <strong>{{ newbook.stock_status }}</strong><br></h6>
 
-                <img src="{{ url_for('static',filename= "newbook_pics/" + newbook.photopath ) }}"  class="img-fluid" alt="" height="220" width="420">
-                <br>
-                <br>
+    <br>
+    <br>
 
-                <form action= "{{ url_for('eShop') }}" method="post" >
+        <div class="card container">
 
-                    {{ item.item_name(value = newbook.bookname ) }}
-                    {{ item.item_price(value = newbook.price ) }}
-                    {{ item.csrf_token }}
-                    <button type="submit" class="btn btn-dark">Add to cart</button>
 
+            <div>
+
+                <form action= "{{ url_for('cart') }}" method="post" >
+                    <h1 class="jumbotron">eShop <button type="submit" class="btn btn-dark float-right btn-lg">View Cart</button></h1>
                 </form>
+            </div>
 
-                <br>
-                <br>
-            {% endfor %}
+            <div class="card container border-dark p-5 ">
 
+                <div class="card-body  ">
 
-        </div>
-    </div>
+                   <h2 class="jumbotron">New Books</h2>
 
+                    <style>
+                        .flex-container {
+                        display: flex;
+                        flex-wrap: wrap;
 
-    <br>
+                        }
 
-   <div class="card ">
-        <div class="card-body px-lg-5 pt-5 bg-light ">
+                     </style>
 
-            <h3>Used Books</h3>
+                    <div class="flex-container ">
 
-            {% for usedbook in usedbooks %}
-
-                <div class ="container-fluid">
-                    {{ usedbook.ubookname }}<br>
-                    {{ usedbook.uauthor }}<br>
-                    {{ usedbook.uprice }} <strong>{{ usedbook.ustock_status }}</strong><br>
-
-                    <img src="{{ url_for('static',filename= "usedbook_pics/" + usedbook.uphotopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
-                    <br>
-
-                     <form action= "{{ url_for('eShop') }}" method="post" >
-
-                        {{ item.item_name(value = usedbook.ubookname ) }}
-                        {{ item.item_price(value = usedbook.uprice ) }}
-                        {{ item.csrf_token }}
-                        <button type="submit" class="btn btn-dark">Add to cart</button>
-
-                    </form>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-    </div>
+                            {% for newbook in newbooks %}
 
 
-    <br>
+                                <div class=" border border-dark p-5">
+                                    <h3><strong>Title:</strong>{{ newbook.bookname }}</h3>
+                                    <h5><strong>Publisher:</strong>{{ newbook.publisher }}</h5>
+                                    <h6><strong>$</strong>{{ newbook.price }} <strong>{{ newbook.stock_status }}</strong><br></h6>
 
-    <div class="card ">
-        <div class="card-body px-lg-5 pt-5 bg-light ">
+                                    <img src="{{ url_for('static',filename= "newbook_pics/" + newbook.photopath ) }}"  class="img-fluid " alt="" height="200" width="200px">
+                                    <br>
+                                    <br>
 
-            <h3>Supplies</h3>
+                                    <div>
+                                         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo{{ loop.index }}">More Item Info</button>
+
+                                        <div id="demo{{ loop.index }}" class="collapse">
+                                            <br>
+                                            <h6>ISBN-13:{{ newbook.ISBN13 }}</h6>
+                                            <h6>ISBN-10:{{ newbook.ISBN10 }}</h6>
+                                            <h6>Series:{{ newbook.series }}</h6>
+                                            <h6>Format:{{ newbook.Format }}</h6>
+                                            <h6>Publication Date:{{ newbook.publication_date }}</h6>
+                                            <h6>Dimensions:{{ newbook.dimensions }}</h6>
+                                            <h6>Language:{{ newbook.language }}</h6>
+                                            <h6>Weight:{{ newbook.weight }}</h6>
+                                            <h6>Description:{{ newbook.description }}</h6>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                                        {{ items.product_name(value = newbook.bookname ) }}
+                                        {{ items.item_price(value = newbook.price ) }}
+                                        {{ items.qty(class="custom-select") }}
+                                        <br>
+                                        {{ items.csrf_token }}
+                                        <br>
+                                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                                    </form>
+
+                                    {% if  current_user.is_admin %}
+
+                                        <br>
+                                        <form action= "{{ url_for('nbook_del') }}" method="post" >
 
 
-             {% for supply in supplies %}
+                                             {{ eshop.pic_Name(value = newbook.photopath) }}
 
-                <div class ="container-fluid">
+                                             {{eshop.item_id (value =newbook.id) }}
 
-                    {{ supply.name }}<br>
-                    {{ supply.price }} <strong>{{ supply.stock_status }}</strong><br>
+                                             {{ eshop.csrf_token }}
 
-                    <img src="{{ url_for('static',filename= "supplies_pics/" + supply.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
-                    <br>
+                                              <button type="submit" class="btn btn-outline-info">Delete Item</button>
 
-                    <form action= "{{ url_for('eShop') }}" method="post" >
-
-                        {{ item.item_name(value = supply.name ) }}
-                        {{ item.item_price(value = supply.price ) }}
-                        {{ item.csrf_token }}
-                        <button type="submit" class="btn btn-dark">Add to cart</button>
-
-                    </form>
+                                        </form>
 
 
-                </div>
+                                    {% else %}
+                                    {% endif %}
 
-            {% endfor %}
+
+                                </div>
 
 
-        </div>
-    </div>
+                            {% endfor %}
 
-    <br>
-
-    <div class="card ">
-        <div class="card-body px-lg-5 pt-5 bg-light ">
-
-            <h3>Accessories</h3>
-
-            {% for accessory in accessories %}
-
-                <div class ="container-fluid">
-                    {{ accessory.name }}<br>
-                    {{ accessory.price }} <Strong>{{ accessory.stock_status }}</Strong><br>
-
-                    <img src="{{ url_for('static',filename= "accessory_pics/" + accessory.photopath ) }}"  class="img-fluid" alt="" height="220" width="420"><br>
-                    <br>
-
-                    <form action= "{{ url_for('eShop') }}" method="post" >
-
-                            {{ item.item_name(value = accessory.name ) }}
-                            {{ item.item_price(value = accessory.price ) }}
-                            {{ item.csrf_token }}
-                            <button type="submit" class="btn btn-dark">Add to cart</button>
-
-                    </form>
+                     </div>
 
                 </div>
-
-            {% endfor %}
-
-        </div>
-    </div>
-
-    <br>
+            </div>
 
 
+            <br>
 
+           <div class="card container border-dark p-5">
+                <div class="card-body ">
+
+                    <h2 class="jumbotron">Used Books</h2>
+
+                    <div class="flex-container">
+                        {% for usedbook in usedbooks %}
+
+                            <div class=" border border-dark p-5">
+                                    <h3><strong>Title:</strong>{{ usedbook.ubookname }}</h3>
+                                    <h5><strong>Publisher:</strong>{{ usedbook.uauthor }}</h5>
+                                    <h6><strong>$</strong>{{ usedbook.uprice }} <strong>{{ usedbook.ustock_status }}</strong><br></h6>
+
+                                    <img src="{{ url_for('static',filename= "usedbook_pics/" + usedbook.uphotopath ) }}"  class="img-fluid " alt="" height="200" width="200px">
+                                    <br>
+                                    <br>
+
+                                    <div>
+                                         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo1{{ loop.index }}">More Item Info</button>
+
+                                        <div id="demo1{{ loop.index }}" class="collapse">
+                                            <br>
+                                            <h6>ISBN-13:{{ usedbook.uISBN13 }}</h6>
+                                            <h6>ISBN-10:{{ usedbook.uISBN10 }}</h6>
+                                            <h6>Series:{{ usedbook.useries }}</h6>
+                                            <h6>Format:{{ usedbook.uFormat }}</h6>
+                                            <h6>Publication Date:{{ usedbook.upublication_date }}</h6>
+                                            <h6>Dimensions:{{ usedbook.udimensions }}</h6>
+                                            <h6>Language:{{ usedbook.ulanguage }}</h6>
+                                            <h6>Weight:{{ usedbook.uweight }}</h6>
+                                            <h6>Description:{{ usedbook.udescription }}</h6>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                                        {{ items.product_name(value = usedbook.ubookname ) }}
+                                        {{ items.item_price(value = usedbook.uprice ) }}
+                                        {{ items.qty(class="custom-select") }}
+                                        <br>
+                                        {{ items.csrf_token }}
+                                        <br>
+                                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                                    </form>
+
+                                    {% if  current_user.is_admin %}
+
+                                        <br>
+                                        <form action= "{{ url_for('ubook_del') }}" method="post" >
+
+
+                                             {{ eshop.pic_Name(value = usedbook.uphotopath) }}
+
+                                             {{eshop.item_id (value =usedbook.id) }}
+
+                                             {{ eshop.csrf_token }}
+
+                                              <button type="submit" class="btn btn-outline-info">Delete Item</button>
+
+                                        </form>
+
+
+                                    {% else %}
+                                    {% endif %}
+
+
+
+
+                                </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
+            <br>
+
+
+
+            <div class="card container border-dark p-5">
+                <div class="card-body ">
+
+                    <h2 class="jumbotron">Supplies</h2>
+
+                     <div class="flex-container">
+
+                         {% for supply in supplies %}
+
+                              <div class=" border border-dark p-5">
+                                    <h3><strong>Item:</strong>{{ supply.name }}</h3>
+                                    <h6><strong>$</strong>{{ supply.price }} <strong>{{ supply.stock_status }}</strong><br></h6>
+
+                                    <img src="{{ url_for('static',filename= "supplies_pics/" + supply.photopath ) }}"  class="img-fluid " alt="" height="200" width="200px">
+                                    <br>
+                                    <br>
+
+                                    <div>
+                                         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2{{ loop.index }}">More Item Info</button>
+
+                                        <div id="demo2{{ loop.index }}" class="collapse">
+                                            <br>
+                                            <h6>Description:{{ supply.description }}</h6>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                                        {{ items.product_name(value = supply.name ) }}
+                                        {{ items.item_price(value = supply.price ) }}
+                                        {{ items.qty(class="custom-select") }}
+                                        <br>
+                                        {{ items.csrf_token }}
+                                        <br>
+                                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                                    </form>
+
+                                    {% if  current_user.is_admin %}
+
+                                        <br>
+                                        <form action= "{{ url_for('supply_del') }}" method="post" >
+
+
+                                             {{ eshop.pic_Name(value = supply.photopath) }}
+
+                                             {{eshop.item_id (value =supply.id) }}
+
+                                             {{ eshop.csrf_token }}
+
+                                              <button type="submit" class="btn btn-outline-info">Delete Item</button>
+
+                                        </form>
+
+
+                                    {% else %}
+                                    {% endif %}
+
+                                </div>
+
+                        {% endfor %}
+
+                     </div>
+
+                </div>
+            </div>
+
+            <br>
+
+            <div class="card container border-dark p-5">
+                <div class="card-body">
+
+                    <h2 class="jumbotron">Accessories</h2>
+
+                    <div class="flex-container">
+                        {% for accessory in accessories %}
+
+
+                            <div class=" border border-dark p-5">
+                                    <h3><strong>Item:</strong>{{ accessory.name }}</h3>
+                                    <h6><strong>$</strong>{{ accessory.price }} <strong>{{ accessory.stock_status }}</strong><br></h6>
+
+                                    <img src="{{ url_for('static',filename= "accessory_pics/" + accessory.photopath ) }}"  class="img-fluid " alt="" height="200" width="200px">
+                                    <br>
+                                    <br>
+
+                                    <div>
+                                         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo3{{ loop.index }}">More Item Info</button>
+
+                                        <div id="demo3{{ loop.index }}" class="collapse">
+                                            <br>
+                                            <h6>Description:{{ accessory.description }}</h6>
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <form action= "{{ url_for('eShop') }}" method="post" >
+
+                                        {{ items.product_name(value = accessory.name ) }}
+                                        {{ items.item_price(value = accessory.price ) }}
+                                        {{ items.qty(class="custom-select") }}
+                                        <br>
+                                        {{ items.csrf_token }}
+                                        <br>
+                                        <button type="submit" class="btn btn-dark">Add to cart</button>
+
+                                    </form>
+
+                                    {% if  current_user.is_admin %}
+
+                                        <br>
+                                        <form action= "{{ url_for('acc_del') }}" method="post" >
+
+
+                                             {{ eshop.pic_Name(value = accessory.photopath) }}
+
+                                             {{eshop.item_id (value =accessory.id) }}
+
+                                             {{ eshop.csrf_token }}
+
+                                              <button type="submit" class="btn btn-outline-info">Delete Item</button>
+
+                                        </form>
+
+
+                                    {% else %}
+                                    {% endif %}
+
+
+
+                                </div>
+
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <br>
+</div>
+
+</div>
 
 
 

@@ -3,12 +3,13 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Add Stock</h1>
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
 
+<br>
+<br>
+<div class="card container">
 
-<div class="card bg-light">
-
- <div class="card-body px-lg-5 pt-5">
+ <div class="card-body ">
 
 
     <h4>Add New Book</h4>
@@ -22,7 +23,7 @@
 
 
         <div class="form-group">
-            <label for="exampleInputEmail1">Author</label>
+            <label for="exampleInputEmail1">Publisher</label>
             {{ Nbook.author(class="form-control") }}
         </div>
 
@@ -38,6 +39,50 @@
             {{ Nbook.picture}}
         </div>
 
+         <div class="form-group">
+            <label for="exampleInputEmail1">ISBN-13</label>
+            {{ Nbook.ISBN13(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">ISBN-10</label>
+            {{ Nbook.ISBN10(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Series</label>
+            {{ Nbook.series(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Format</label>
+            {{ Nbook.Format(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Publication Date</label>
+            {{ Nbook.publication_date(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Dimensions</label>
+            {{ Nbook.dimensions(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Language</label>
+            {{ Nbook.language(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Weight</label>
+            {{ Nbook.weight(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Description</label>
+            {{ Nbook.description(class="form-control") }}
+        </div>
 
         {{ Nbook.csrf_token }}
 
@@ -51,9 +96,9 @@
 <br>
 <br>
 
-<div class="card bg-light">
+<div class="card container">
 
- <div class="card-body px-lg-5 pt-5">
+ <div class="card-body ">
 
     <h4>Add Used Book</h4>
 
@@ -82,6 +127,52 @@
             {{ Ubook.upicture}}
         </div>
 
+        <div class="form-group">
+            <label for="exampleInputEmail1">ISBN-13</label>
+            {{ Ubook.uISBN13(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">ISBN-10</label>
+            {{ Ubook.uISBN10(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Series</label>
+            {{ Ubook.useries(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Format</label>
+            {{ Ubook.uFormat(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Publication Date</label>
+            {{ Ubook.upublication_date(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Dimensions</label>
+            {{ Ubook.udimensions(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Language</label>
+            {{ Ubook.ulanguage(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Weight</label>
+            {{ Ubook.uweight(class="form-control") }}
+        </div>
+
+         <div class="form-group">
+            <label for="exampleInputEmail1">Description</label>
+            {{ Ubook.udescription(class="form-control") }}
+        </div>
+
+
          {{ Ubook.csrf_token }}
 
         <button type="submit" class="btn btn-dark">Add</button>
@@ -93,9 +184,9 @@
 <br>
 <br>
 
-<div class="card bg-light">
+<div class="card container">
 
- <div class="card-body px-lg-5 pt-5">
+ <div class="card-body ">
 
     <h4>Add Supplies</h4>
 
@@ -119,6 +210,12 @@
             {{ supply.picture}}
         </div>
 
+        <div class="form-group">
+            <label for="exampleInputEmail1">Description</label>
+            {{ supply.description(class="form-control") }}
+        </div>
+
+
          {{ supply.csrf_token }}
 
         <button type="submit" class="btn btn-dark">Add</button>
@@ -130,9 +227,9 @@
 <br>
 <br>
 
-<div class="card bg-light">
+<div class="card container">
 
- <div class="card-body px-lg-5 pt-5">
+ <div class="card-body">
 
 
     <h4>Add Accessories</h4>
@@ -157,6 +254,11 @@
             {{ acc.picture}}
         </div>
 
+        <div class="form-group">
+            <label for="exampleInputEmail1">Description</label>
+            {{ acc.description(class="form-control") }}
+        </div>
+
          {{ acc.csrf_token }}
 
         <button type="submit" class="btn btn-dark">Add</button>
@@ -167,5 +269,5 @@
 
 <br>
 <br>
-
+</div>
 {% endblock %}

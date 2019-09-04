@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="card container border border-dark p-5">
+
+        <div class="card-body ">
+
+            <h1>Your Shopping Cart</h1>
+
+            <div class="card container border border-dark p-5">
+
+                <div>
+
+                    <h2><u>Your Items</u></h2>
+
+                    <br>
+                    {% for item in cart_items %}
+
+
+                        <h5>Item:{{item.item_name}} </h5>
+                        <h5>Qty:{{ item.qty }}</h5>
+                        <h5>Price: ${{ item.price }}</h5>
+
+
+                            <form action= "{{ url_for('cart_del') }}" method="post" >
+
+
+                                {{cart.cart_id (value =item.id) }}
+
+                                {{ cart.csrf_token }}
+
+                                <button type="submit" class="btn btn-outline-info ">Delete Item</button>
+
+                            </form>
+
+                        <hr>
+                    {% endfor %}
+
+                    <h5 class="float-right"><strong>Total:${{ cart_items|sum(attribute='price') }}</strong></h5>
+
+
+
+                    <form action= "{{ url_for('checkout') }}" method="post" >
+                        <button type="submit" class="btn btn-dark">Check Out</button>
+                    </form>
+
+            </div>
+
+
+
+
+
+
+             </div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

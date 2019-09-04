@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="card container border border-dark p-5">
+
+        <div class="card-body ">
+
+            <h1>Checkout</h1>
+
+            <div class="card container border border-dark p-5">
+
+                <div>
+
+                    <h2><u>Your Order</u></h2>
+
+                    <br>
+                    {% for item in cart_stuff %}
+
+                        <h5>Item:{{item.item_name}}</h5>
+                        <h5>Qty:{{ item.qty }}</h5>
+                        <h5>Price: ${{ item.price }}</h5>
+                        <hr>
+
+                    {% endfor %}
+
+                    <h5 ><strong>Total:${{ cart_stuff|sum(attribute='price') }}</strong></h5>
+                    <br>
+                    <form action= "{{ url_for('placeorder') }}" method="post" >
+                        <h5>Payment Options</h5>
+                        {{payment.payment(class="custom-select")}}<br>
+                         <br>
+                        <h5>Please enter your phone number:</h5>
+                        {{ payment.phone_num(class="form-control") }}
+                        {{ payment.total(value = cart_stuff|sum(attribute='price')) }}
+                        <br>
+                        <button type="submit" class="btn btn-dark">Place Order</button>
+                    </form>
+
+            </div>
+
+
+
+
+
+
+             </div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

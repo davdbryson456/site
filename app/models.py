@@ -443,3 +443,69 @@ class Cart(db.Model):
 
     def __repr__(self):
         return f"Cart('{self.item_name}')"
+
+
+
+class one_vids(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    onevidpath = db.Column(db.String(255), nullable=True)
+
+    c_name = db.Column(db.String(255), nullable=True)
+
+    vid_title = db.Column(db.String(255), nullable=True)
+
+
+    def __init__(self, c_name, vid_title, onevidpath):
+
+        self.onevidpath = onevidpath
+        self.vid_title = vid_title
+        self.c_name = c_name
+
+
+    def __repr__(self):
+        return f"one_vids('{self.vid_title}')"
+
+
+
+class two_vids(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    onevidpath2 = db.Column(db.String(255), nullable=True)
+
+    c_name2 = db.Column(db.String(255), nullable=True)
+
+    vid_title2 = db.Column(db.String(255), nullable=True)
+
+
+    def __init__(self, c_name2, vid_title2, onevidpath2):
+
+        self.onevidpath2 = onevidpath2
+        self.vid_title2 = vid_title2
+        self.c_name2 = c_name2
+
+
+    def __repr__(self):
+        return f"two_vids('{self.vid_title2}')"
+
+
+
+class three_vids(db.Model):
+
+        id = db.Column(db.Integer, primary_key=True)
+
+        onevidpath3 = db.Column(db.String(255), nullable=True)
+
+        c_name3 = db.Column(db.String(255), nullable=True)
+
+        vid_title3 = db.Column(db.String(255), nullable=True)
+
+        def __init__(self, c_name3, vid_title3, onevidpath3):
+            self.onevidpath3 = onevidpath3
+            self.vid_title3 = vid_title3
+            self.c_name3 = c_name3
+
+        def __repr__(self):
+            return f"three_vids('{self.vid_title3}')"

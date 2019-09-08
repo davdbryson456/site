@@ -2,48 +2,185 @@
 
 {% block main %}
 
-<h1 class="jumbotron">Tutorials</h1>
+
+<div class="view" style="background-image: url('{{ url_for('static',filename= "backgrounds/HyperWeb-9.jpg" ) }}'); background-repeat: no-repeat; background-size: cover; background-position: center center;  background-attachment:fixed;">
 
 
+{% if current_user.year =="1" or current_user.is_admin%}
+    <br>
+    <div class="card container">
+     <div class="card-body">
+        <h1 class="jumbotron">Year One Tutorials</h1>
+         <style>
+                .flex-container {
+                display: flex;
+                flex-wrap: wrap;
 
+          }
+
+          </style>
+
+    <div class="flex-container">
     {% for video in videos %}
 
-    <div class="card-body px-lg-8 pt-9">
-        <br>
-        <br>
-        <h6>{{ video }}</h6>
-       <video controls controlsList="nodownload" width="450" height=250">
+            <div class="border border-dark p-3">
+                <h5>Course: {{ video.c_name }}</h5>
+                <h5>Video Title: {{ video.vid_title }}</h5>
+               <video controls controlsList="nodownload" width="450" height=250">
 
-            <source src="{{ url_for('static',filename= "tutorial_vids/" + video ) }}" type="video/mp4"/>
+                    <source src="{{ url_for('static',filename= "year1_vids/" + video.onevidpath ) }}" type="video/mp4"/>
 
-            Sorry, your browser doesn't support embedded videos.
-       </video>
-    </div>
-
-        {% if  current_user.is_admin %}
+                    Sorry, your browser doesn't support embedded videos.
+               </video>
 
 
-                <form action= "{{ url_for('tutorials') }}" method="post" >
+                {% if  current_user.is_admin %}
 
 
-                     {{ dele.vid_name(value = video) }}
-
-                     {{ dele.csrf_token }}
-
-                      <button type="submit" class="btn btn-outline-info">Delete Post</button>
-
-                </form>
+                        <form action= "{{ url_for('tutorials') }}" method="post" >
 
 
-        {% else %}
-        {% endif %}
+                             {{ dele.vid_name(value = video.onevidpath) }}
+
+                             {{ dele.p_id(value = video.id) }}
+
+                             {{ dele.csrf_token }}
+
+                              <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                        </form>
 
 
+                {% else %}
+                {% endif %}
 
+            </div>
     {% endfor%}
+    </div>
+     </div>
+ </div>
+{% endif %}
+
+
+
+
+{% if current_user.year =="2" or current_user.is_admin%}
+    <br>
+    <div class="card container">
+     <div class="card-body">
+        <h1 class="jumbotron">Year Two Tutorials</h1>
+         <style>
+                .flex-container {
+                display: flex;
+                flex-wrap: wrap;
+
+          }
+
+          </style>
+
+    <div class="flex-container">
+    {% for video in videos2 %}
+
+            <div  class="border border-dark p-3">
+                <h5>Course: {{ video.c_name2 }}</h5>
+                <h5>Video Title: {{ video.vid_title2 }}</h5>
+               <video controls controlsList="nodownload" width="450" height=250">
+
+                    <source src="{{ url_for('static',filename= "year2_vids/" + video.onevidpath2 ) }}" type="video/mp4"/>
+
+                    Sorry, your browser doesn't support embedded videos.
+               </video>
+
+
+                {% if  current_user.is_admin %}
+
+
+                        <form action= "{{ url_for('dele2') }}" method="post" >
+
+
+                             {{ dele2.vid_name2(value = video.onevidpath2) }}
+
+                            {{ dele2.p_id2(value = video.id) }}
+
+                             {{ dele2.csrf_token }}
+
+                              <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                        </form>
+
+
+                {% else %}
+                {% endif %}
+
+            </div>
+    {% endfor%}
+    </div>
+     </div>
+ </div>
+{% endif %}
+
+
+
+
+{% if current_user.year =="3" or current_user.is_admin%}
+    <br>
+    <div class="card container">
+     <div class="card-body">
+        <h1 class="jumbotron">Year Three Tutorials</h1>
+         <style>
+                .flex-container {
+                display: flex;
+                flex-wrap: wrap;
+
+          }
+
+          </style>
+
+    <div class="flex-container">
+    {% for video in videos3 %}
+
+            <div  class="border border-dark p-3">
+                <h5>Course: {{ video.c_name3 }}</h5>
+                <h5>Video Title: {{ video.vid_title3 }}</h5>
+               <video controls controlsList="nodownload" width="450" height=250">
+
+                    <source src="{{ url_for('static',filename= "year3_vids/" + video.onevidpath3 ) }}" type="video/mp4"/>
+
+                    Sorry, your browser doesn't support embedded videos.
+               </video>
+
+
+                {% if  current_user.is_admin %}
+
+
+                        <form action= "{{ url_for('dele3') }}" method="post" >
+
+
+                             {{ dele3.vid_name3(value = video.onevidpath3) }}
+
+                             {{ dele3.p_id3(value = video.id) }}
+
+
+                             {{ dele3.csrf_token }}
+
+                              <button type="submit" class="btn btn-outline-info">Delete Post</button>
+
+                        </form>
+
+
+                {% else %}
+                {% endif %}
+
+            </div>
+    {% endfor%}
+    </div>
+     </div>
+ </div>
+{% endif %}
 
 
 
 
 
+</div>
 {% endblock %}

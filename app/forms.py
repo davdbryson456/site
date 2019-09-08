@@ -16,6 +16,7 @@ class Signup (Form):
     year = SelectField('year', choices=[('1', '1'), ('2', '2'), ('3', '3')])
 
 
+
 class contactform (Form):
 
     subject = StringField('Subject', validators=[DataRequired()])
@@ -30,8 +31,10 @@ class Login (Form):
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class Uploadvids(Form):
+class onevids(Form):
 
+    vid_title = StringField('y1 vids', validators=[DataRequired()])
+    c_title = StringField('y1 vids', validators=[DataRequired()])
     video = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
 
 
@@ -39,7 +42,7 @@ class _Post(Form):
 
     title = StringField('Title', [InputRequired()])
     content = TextAreaField('Content', [InputRequired()])
-    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg'], 'Pictures only!')])
+    picture = FileField('Pictures must be in .jpg format', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'PDF'], 'Pictures only!')])
 
 
 class _Comment (Form):
@@ -120,6 +123,19 @@ class Deletepost (Form):
 class Deletevids (Form):
 
     vid_name = HiddenField()
+    p_id = HiddenField()
+
+
+class Deletevids2 (Form):
+
+    vid_name2 = HiddenField()
+    p_id2 = HiddenField()
+
+
+class Deletevids3(Form):
+
+    vid_name3 = HiddenField()
+    p_id3 = HiddenField()
 
 
 class Homepage (Form):
@@ -171,4 +187,18 @@ class checkoutt(Form):
     payment = SelectField('payment', choices=[('Cash','Cash'), ('Card','Card')])
     phone_num = StringField('Phone Number', [InputRequired()])
     total = HiddenField()
+
+
+class year2vids (Form):
+
+    vid_title2 = StringField('y1 vids', validators=[DataRequired()])
+    c_title2 = StringField('y1 vids', validators=[DataRequired()])
+    video2 = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
+
+
+class year3vids (Form):
+
+    vid_title3 = StringField('y1 vids', validators=[DataRequired()])
+    c_title3 = StringField('y1 vids', validators=[DataRequired()])
+    video3 = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
 

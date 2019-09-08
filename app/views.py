@@ -4,8 +4,10 @@ from app import app, db
 from flask import render_template, url_for, flash, redirect, request, abort, session
 from app import mail
 from flask_mail import Message
-from app.forms import Signup, contactform, Login, Uploadvids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart, Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del, eshop_del, cartt_del,checkoutt
-from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename, Cart
+from app.forms import Signup, contactform, Login, onevids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart,\
+    Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del, eshop_del, cartt_del, checkoutt, year2vids, year3vids, Deletevids2, Deletevids3
+
+from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename, Cart, one_vids, two_vids, three_vids
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required,UserMixin
 from flask_admin import Admin
@@ -72,28 +74,82 @@ def tutorials():
     if current_user.is_authorized == True:
 
         dele = Deletevids()
+        dele2 = Deletevids2()
+        dele3 = Deletevids3()
 
-        if request.method == 'POST' and dele.validate_on_submit():
+        if dele.validate_on_submit():
 
-            vidname = dele.vid_name.data
+            target = os.path.join(APP_ROOT, 'static/year1_vids/')
 
-            target = os.path.join(APP_ROOT, 'static/tutorial_vids/')
+            os.remove("/".join([target, dele.vid_name.data]))
 
-            os.remove("/".join([target, vidname]))
+            del_post = one_vids.query.filter_by(id=dele.p_id.data).first()
+
+            db.session.delete(del_post)
+            db.session.commit()
 
             flash('Video Deleted!', 'success')
 
             return redirect(url_for('tutorials'))
 
-        videos = get_uploaded_videos()
 
-        return render_template('tutorials.html', videos=videos, dele=dele)
+
+
+
+        videos = db.session.query(one_vids).all()
+        videos2 = db.session.query(two_vids).all()
+        videos3 = db.session.query(three_vids).all()
+
+        return render_template('tutorials.html', videos=videos, dele=dele, dele2=dele2, videos2=videos2, videos3=videos3 , dele3=dele3)
 
     else:
 
         flash('You require admin approval to view this page !', 'info')
         return redirect(url_for('home'))
 
+
+
+@app.route('/dele2/', methods=["GET", "POST"])
+@login_required
+def dele2():
+
+    dele2 = Deletevids2()
+
+    if dele2.validate_on_submit():
+        target2 = os.path.join(APP_ROOT, 'static/year2_vids/')
+
+        os.remove("/".join([target2, dele2.vid_name2.data]))
+
+        del_post = two_vids.query.filter_by(id=dele2.p_id2.data).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Video Deleted!', 'success')
+
+        return redirect(url_for('tutorials'))
+
+
+@app.route('/dele3/', methods=["GET", "POST"])
+@login_required
+def dele3():
+
+    dele3 = Deletevids3()
+
+    if dele3.validate_on_submit():
+
+        target3 = os.path.join(APP_ROOT, 'static/year3_vids/')
+
+        os.remove("/".join([target3, dele3.vid_name3.data]))
+
+        del_post = three_vids.query.filter_by(id=dele3.p_id3.data).first()
+
+        db.session.delete(del_post)
+        db.session.commit()
+
+        flash('Video Deleted!', 'success')
+
+        return redirect(url_for('tutorials'))
 
 
 
@@ -861,11 +917,16 @@ def uploads():
 
     if current_user.is_admin == True:
 
-        uploads = Uploadvids()
+        uploads = onevids()
+        y2uploads = year2vids()
+        y3uploads = year3vids()
+
+        vidtitle = uploads.vid_title.data
+        c_title = uploads.c_title.data
 
         if request.method == 'POST' and uploads.validate_on_submit():
 
-            target = os.path.join(APP_ROOT, 'static/tutorial_vids/')
+            target = os.path.join(APP_ROOT, 'static/year1_vids/')
 
             if not os.path.isdir(target):
                 os.mkdir(target)
@@ -874,10 +935,65 @@ def uploads():
             videoname = secure_filename(video.filename)
 
             video.save("/".join([target, videoname]))
-            flash('File Saved', 'success')
-            return redirect(url_for('home'))
 
-        return render_template('uploads.html', uploads=uploads)
+            newvid = one_vids(c_title, vidtitle, videoname)
+            db.session.add(newvid)
+            db.session.commit()
+
+            flash('File Saved', 'success')
+            return redirect(url_for('uploads'))
+
+
+
+        if request.method == 'POST' and y2uploads.validate_on_submit():
+
+            vidtitle2 = y2uploads.vid_title2.data
+            c_title2 = y2uploads.c_title2.data
+
+            target = os.path.join(APP_ROOT, 'static/year2_vids/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            video2 = y2uploads.video2.data
+            videoname2 = secure_filename(video2.filename)
+
+            video2.save("/".join([target, videoname2]))
+
+            newvid2 = two_vids(c_title2, vidtitle2, videoname2)
+            db.session.add(newvid2)
+            db.session.commit()
+
+            flash('File Saved', 'success')
+            return redirect(url_for('uploads'))
+
+
+
+        if request.method == 'POST' and y3uploads.validate_on_submit():
+
+            vidtitle3 = y3uploads.vid_title3.data
+            c_title3 = y3uploads.c_title3.data
+
+            target = os.path.join(APP_ROOT, 'static/year3_vids/')
+
+            if not os.path.isdir(target):
+                os.mkdir(target)
+
+            video3 = y3uploads.video3.data
+            videoname3 = secure_filename(video3.filename)
+
+            video3.save("/".join([target, videoname3]))
+
+            newvid3 = three_vids(c_title3, vidtitle3, videoname3)
+            db.session.add(newvid3)
+            db.session.commit()
+
+            flash('File Saved', 'success')
+            return redirect(url_for('uploads'))
+
+
+
+        return render_template('uploads.html', uploads=uploads, y2uploads=y2uploads, y3uploads=y3uploads)
 
     else:
         return redirect(url_for('home'))
@@ -919,13 +1035,6 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
-def get_uploaded_videos():
-    rootdir = os.getcwd()
-    filenames = []
-    for subdir, dirs, files in os.walk(rootdir + './app/static/tutorial_vids'):
-	    for file in files:
-             filenames.append(os.path.join( file).split('/')[-1])
-    return filenames
 
 
 

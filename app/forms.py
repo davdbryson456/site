@@ -202,3 +202,10 @@ class year3vids (Form):
     c_title3 = StringField('y1 vids', validators=[DataRequired()])
     video3 = FileField('Videos must be in mp4 format', validators=[FileRequired(), FileAllowed(['mp4'], 'Videos only!')])
 
+
+class hyperimprints(Form):
+
+    attachment = FileField('', validators=[FileRequired(), FileAllowed(['pdf','PDF', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'pptx','ppt'], 'Files!')])
+    instructions = TextAreaField('', validators=[DataRequired()])
+    number = StringField('', validators=[DataRequired()])
+    address = TextAreaField('')

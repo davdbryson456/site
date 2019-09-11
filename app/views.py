@@ -5,7 +5,7 @@ from flask import render_template, url_for, flash, redirect, request, abort, ses
 from app import mail
 from flask_mail import Message
 from app.forms import Signup, contactform, Login, onevids, _Post, _Comment, Add_newbook, Add_usedbook, Add_supplies, Add_accessories, addtocart,\
-    Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del, eshop_del, cartt_del, checkoutt, year2vids, year3vids, Deletevids2, Deletevids3
+    Deletepost, Deletevids, Homepage, Resources, resources_del, resource_files, file_del, eshop_del, cartt_del, checkoutt, year2vids, year3vids, Deletevids2, Deletevids3, hyperimprints
 
 from .models import Users, Post, Comment, NewBook, UsedBook, Supplies, Accessories, Orders, Homepage_pics, News, Filename, Cart, one_vids, two_vids, three_vids
 from sqlalchemy.exc import IntegrityError
@@ -997,6 +997,38 @@ def uploads():
 
     else:
         return redirect(url_for('home'))
+
+
+
+@app.route('/hyperprints/', methods=['POST', 'GET'])
+@login_required
+def hyperprints():
+
+    imprint = hyperimprints()
+
+    if request.method == 'POST' and imprint.validate_on_submit():
+
+        with mail.connect() as conn:
+
+            msg = Message(subject="New Print Request!", sender="noreply@hyperacademics.com", recipients=["davidbryson@hotmail.com"])
+
+            body = ("Name:" + " " + current_user.first_name + " " + current_user.last_name + "\n" +
+                    "Email:" + " " + current_user.email + "\n" +
+                    "Print Instructions:" + " " + imprint.instructions.data + "\n" +
+                    "Phone Number:" + " " + imprint.number.data + "\n" +
+                    "Delivery Location:"+" " + imprint.address.data )
+
+            msg.body = (body)
+
+            msg.attach(imprint.attachment.data.filename ,'application/octect-stream', imprint.attachment.data.read())
+
+            conn.send(msg)
+
+            flash('Print request sent', 'success')
+
+            return redirect(url_for('hyperprints'))
+
+    return render_template('hyperprints.html', imprint=imprint)
 
 
 @app.route('/<file_name>.txt')
